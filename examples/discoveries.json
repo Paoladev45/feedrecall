@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "captured_at": "2026-08-13T09:30:00.000Z",
+  "records": [
+    {
+      "source": {
+        "platform": "x",
+        "type": "like",
+        "external_id": "example-roblox-mcp",
+        "url": "https://example.com/posts/roblox-mcp",
+        "author": "Example Builder",
+        "published_at": "2026-08-11T14:00:00.000Z"
+      },
+      "content": {
+        "title": "A new local bridge for Roblox Studio",
+        "text": "An open bridge lets AI agents inspect and edit Roblox Studio through typed tools.",
+        "external_links": ["https://github.com/example/roblox-studio-bridge"],
+        "media": []
+      },
+      "classification": {
+        "topics": ["roblox", "mcp", "agents"],
+        "priority": 4
+      },
+      "evidence": { "status": "claimed", "confidence": 0.45 }
+    },
+    {
+      "source": {
+        "platform": "github",
+        "type": "star",
+        "external_id": "example-local-memory",
+        "url": "https://github.com/example/local-memory",
+        "author": "Example Labs",
+        "published_at": "2026-08-08T10:00:00.000Z"
+      },
+      "content": {
+        "title": "Local memory server with MCP search",
+        "text": "A SQLite and FTS based memory server for multiple coding agents.",
+        "external_links": [],
+        "media": []
+      },
+      "classification": {
+        "topics": ["memory", "mcp", "sqlite"],
+        "priority": 3
+      },
+      "evidence": { "status": "verified", "confidence": 0.82 }
+    }
+  ]
+}

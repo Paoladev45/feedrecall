@@ -1,0 +1,15 @@
+node_modules/
+dist/
+coverage/
+.feedrecall/
+*.db
+*.db-shm
+*.db-wal
+.env
+.env.*
+!.env.example
+playwright-report/
+test-results/
+*.local.json
+.qa-*/
+.omo/

@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "projects": [
+    {
+      "slug": "studio-agent",
+      "name": "Studio Agent",
+      "description": "A local AI workflow for building and testing Roblox experiences.",
+      "goals": ["connect agents to Roblox Studio", "verify changes with repeatable tests"],
+      "technologies": ["roblox", "mcp", "luau", "agents"],
+      "repositories": [],
+      "status": "active"
+    },
+    {
+      "slug": "agent-memory",
+      "name": "Agent Memory",
+      "description": "Persistent local context shared by multiple coding agents.",
+      "goals": ["route small project context packs", "remember tested decisions"],
+      "technologies": ["memory", "mcp", "sqlite", "codex", "claude"],
+      "repositories": [],
+      "status": "active"
+    }
+  ]
+}

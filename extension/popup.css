@@ -1,0 +1,93 @@
+:root {
+  font:
+    13px / 1.4 "Segoe UI",
+    system-ui,
+    sans-serif;
+  color: #151816;
+  background: #f4f5f2;
+}
+body {
+  margin: 0;
+  inline-size: 320px;
+}
+main {
+  padding: 16px;
+}
+header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-block-end: 18px;
+}
+header > span {
+  inline-size: 32px;
+  block-size: 32px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #16854b;
+  border-radius: 4px;
+  color: #16854b;
+  font-weight: 700;
+}
+header div {
+  display: flex;
+  flex-direction: column;
+}
+header small,
+p,
+label {
+  color: #69716b;
+}
+label {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+}
+select {
+  block-size: 34px;
+  border: 1px solid #dfe3df;
+  border-radius: 4px;
+  background: #fff;
+  padding-inline: 8px;
+}
+.count {
+  margin-block: 18px 8px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.count b {
+  font-size: 28px;
+}
+.count span {
+  color: #69716b;
+}
+p {
+  min-block-size: 38px;
+  margin-block: 8px 16px;
+  font-size: 12px;
+}
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+button {
+  block-size: 36px;
+  border: 1px solid #16854b;
+  border-radius: 4px;
+  background: #fff;
+  color: #16854b;
+  font-weight: 600;
+  cursor: pointer;
+}
+button:last-child {
+  background: #16854b;
+  color: #fff;
+}
+button:disabled {
+  border-color: #dfe3df;
+  background: #edf0ed;
+  color: #929a94;
+  cursor: not-allowed;
+}

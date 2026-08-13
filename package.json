@@ -1,0 +1,69 @@
+{
+  "name": "feedrecall",
+  "version": "0.1.0",
+  "description": "Turn saved social discoveries into project-aware memory for AI agents.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Paoladev45/feedrecall.git"
+  },
+  "homepage": "https://github.com/Paoladev45/feedrecall#readme",
+  "bugs": "https://github.com/Paoladev45/feedrecall/issues",
+  "keywords": [
+    "mcp",
+    "agent-memory",
+    "knowledge-management",
+    "local-first",
+    "bookmarks"
+  ],
+  "bin": {
+    "feedrecall": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "extension",
+    "docs/assets",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "scripts": {
+    "build": "npm run build:core && npm run build:web",
+    "build:core": "tsup",
+    "build:web": "vite build",
+    "dev": "vite",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "test": "vitest run",
+    "check": "npm run typecheck && npm run lint && npm test && npm run build"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.19.9",
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "better-sqlite3": "^13.0.3",
+    "commander": "^14.0.2",
+    "hono": "^4.13.2",
+    "lucide-react": "^0.468.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.8",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/jsdom": "^30.0.0",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.4",
+    "jsdom": "^28.1.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1",
+    "vitest": "^4.0.18"
+  }
+}

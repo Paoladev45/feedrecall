@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "FeedRecall Capture",
+  "version": "0.1.0",
+  "description": "Export visible saved posts to a local FeedRecall import file.",
+  "permissions": ["activeTab", "downloads", "scripting"],
+  "host_permissions": ["https://x.com/*", "https://twitter.com/*"],
+  "action": {
+    "default_title": "Capture visible posts",
+    "default_popup": "popup.html"
+  }
+}
