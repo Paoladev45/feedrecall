@@ -46,6 +46,16 @@ describe("search", () => {
     ).toHaveLength(1)
   })
 
+  it("returns no matches for punctuation-bearing or punctuation-only queries", async () => {
+    const directory = await mkdtemp(path.join(tmpdir(), "feedrecall-search-punctuation-"))
+    const vault = new Vault(path.join(directory, "vault.db"))
+    openVaults.push(vault)
+    vault.upsert(materializeRecord(source, "2026-08-01T10:00:00.000Z"))
+
+    expect(vault.search({ query: "zzzz-no-match" })).toEqual([])
+    expect(vault.search({ query: "---" })).toEqual([])
+  })
+
   it("records evidence and decision transitions as events", async () => {
     const directory = await mkdtemp(path.join(tmpdir(), "feedrecall-events-"))
     const vault = new Vault(path.join(directory, "vault.db"))

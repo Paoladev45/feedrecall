@@ -26,14 +26,11 @@ export function searchMemories(
   let join = ""
   const query = input.query.trim()
   if (query) {
+    const terms = query.match(/[\p{L}\p{N}_]+/gu) ?? []
+    if (terms.length === 0) return []
     join += " JOIN memories_fts f ON f.memory_id = m.id"
     conditions.push("memories_fts MATCH @query")
-    parameters["query"] = query
-      .replace(/["']/g, " ")
-      .split(/\s+/)
-      .filter(Boolean)
-      .map((term) => `${term}*`)
-      .join(" AND ")
+    parameters["query"] = terms.map((term) => `"${term}"*`).join(" AND ")
   }
   if (input.project) {
     join += " JOIN relevance r_filter ON r_filter.memory_id = m.id"
