@@ -18,15 +18,21 @@ It is not a generic vector database, a social-network clone, or an autonomous tr
 - Track `published_at`, `first_seen_at`, and `last_seen_at` separately.
 - Classify processing, evidence, and decision states independently.
 - Search by text, source, topic, project, evidence, and date.
+- Group discoveries into day, week, or month timelines using published, first-seen, or last-seen dates.
+- Recall forgotten discoveries with evidence-aware ranking.
+- Generate bounded project context packs with provenance.
+- Explain freshness, expiration, and possible replacement without deleting anything.
 - Expose the same tools through a local MCP server.
 - Run without a model; optionally enrich through local Ollama.
 
-## v0.2: Projects
+## v0.2: Richer Projects and Connectors
 
 - Model projects as goals, technologies, repositories, problems, discoveries, experiments, and decisions.
 - Produce transparent relevance scores with human-editable reasons.
-- Generate small project context packs instead of dumping the entire vault into an agent.
 - Add Collections for learning themes distinct from active Projects.
+- Add GitHub Stars and generic browser capture connectors.
+- Enrich linked repositories with releases, activity, and license evidence.
+- Compare volatile claims against newer evidence before suggesting review.
 
 ## v0.3: Intelligence
 

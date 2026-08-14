@@ -11,5 +11,6 @@ coverage/
 playwright-report/
 test-results/
 *.local.json
+.qa/
 .qa-*/
 .omo/

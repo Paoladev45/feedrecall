@@ -2,13 +2,47 @@ import { serve } from "@hono/node-server"
 import { serveStatic } from "@hono/node-server/serve-static"
 import { Hono } from "hono"
 import { z } from "zod"
+import { ObsolescenceInputSchema } from "./obsolescence.js"
 import { dataDirectory } from "./paths.js"
 import type { Vault } from "./storage/vault.js"
+import { TimelineInputSchema } from "./timeline.js"
 
 export function startHttpServer(vault: Vault, port: number, webRoot: string): void {
   const app = new Hono()
   app.get("/api/stats", (context) => context.json(vault.stats()))
   app.get("/api/projects", (context) => context.json(vault.projects()))
+  app.get("/api/timeline", (context) => {
+    const input = TimelineInputSchema.parse({
+      dateField: context.req.query("date_field"),
+      groupBy: context.req.query("group_by"),
+      project: context.req.query("project"),
+      after: context.req.query("after"),
+      before: context.req.query("before"),
+      limit: context.req.query("limit"),
+    })
+    return context.json(
+      vault.timeline({
+        dateField: input.dateField,
+        groupBy: input.groupBy,
+        ...(input.project ? { project: input.project } : {}),
+        ...(input.after ? { after: input.after } : {}),
+        ...(input.before ? { before: input.before } : {}),
+        limit: input.limit,
+      }),
+    )
+  })
+  app.get("/api/obsolescence", (context) => {
+    const input = ObsolescenceInputSchema.parse({
+      asOf: context.req.query("as_of"),
+      limit: context.req.query("limit"),
+    })
+    return context.json(
+      vault.obsolescence({
+        ...(input.asOf ? { asOf: input.asOf } : {}),
+        limit: input.limit,
+      }),
+    )
+  })
   app.get("/api/memories", (context) => {
     const input = z
       .object({
@@ -26,7 +60,7 @@ export function startHttpServer(vault: Vault, port: number, webRoot: string): vo
         query: input.q,
         ...(input.project ? { project: input.project } : {}),
         ...(input.evidence ? { evidence: input.evidence } : {}),
-        limit: 100,
+        limit: 500,
       }),
     )
   })

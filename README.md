@@ -1,8 +1,18 @@
 # FeedRecall
 
+[![CI](https://github.com/Paoladev45/feedrecall/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Paoladev45/feedrecall/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/Paoladev45/feedrecall)](LICENSE)
+[![Node.js](https://img.shields.io/badge/node.js-22%2B-339933)](https://nodejs.org/)
+[![MCP](https://img.shields.io/badge/MCP-compatible-1367d1)](https://modelcontextprotocol.io/)
+[![GitHub stars](https://img.shields.io/github/stars/Paoladev45/feedrecall?style=social)](https://github.com/Paoladev45/feedrecall/stargazers)
+
 **Your feed is an inbox, not a knowledge base.**
 
-FeedRecall turns likes, bookmarks, saved links, repositories, videos, and articles into persistent project-aware memory for AI agents. It runs locally, keeps an evidence trail, and exposes the same memory to Codex, Claude Code, Cursor, and other MCP clients.
+FeedRecall turns human-selected likes, bookmarks, saved links, repositories, videos, and articles into persistent project-aware memory for AI agents. It runs locally, keeps an evidence trail, and exposes the same memory to Codex, Claude Code, Cursor, and other MCP clients.
+
+No X API. No cloud account. No telemetry. Your archive stays on your machine.
+
+> Early public alpha: the local core is usable today, while connectors and enrichment workflows are still growing.
 
 ![FeedRecall local memory cockpit](docs/assets/feedrecall-cockpit.jpg)
 
@@ -16,7 +26,21 @@ capture -> enrich -> classify -> connect to projects -> verify -> test -> adopt 
 
 FeedRecall remembers both what a source claimed and what you or your agents later observed. Six months later, an agent can avoid recommending a tool that already failed your Windows test.
 
+## What makes it different
+
+FeedRecall is not another generic "store a note, retrieve a note" memory server:
+
+- **Human-curated input:** your like or bookmark is the intent signal; the system does the organizing.
+- **Project-aware memory:** one discovery can be relevant to Roblox, agent tooling, or several projects at once.
+- **Evidence lifecycle:** claimed, observed, verified, tested, adopted, rejected, and replaced are distinct states.
+- **Time-aware review:** publication, capture, and last-seen dates stay separate; volatile offers can be reviewed without deleting durable concepts.
+- **Agent-ready output:** Codex, Claude Code, Cursor, and other MCP clients receive bounded, sourced context instead of an unfiltered archive.
+
+The goal is simple: recover a useful discovery in seconds, then remember what happened when you actually tried it.
+
 ## Quick start
+
+The demo uses only synthetic examples. It never touches your social accounts.
 
 ```bash
 npm install
@@ -25,8 +49,13 @@ node dist/cli.js init
 node dist/cli.js import examples/discoveries.json
 node dist/cli.js import-projects examples/projects.json
 node dist/cli.js search "Roblox MCP"
+node dist/cli.js recall "MCP memory" --project agent-memory
+node dist/cli.js context --project agent-memory --output context/agent-memory.md
+node dist/cli.js timeline --date-field published --group-by month
 node dist/cli.js serve
 ```
+
+For a guided walkthrough, see [the three-minute demo](docs/DEMO.md).
 
 The canonical database is `~/.feedrecall/feedrecall.db`, so local agents share one memory even when
 they run from different project folders. Set `FEEDRECALL_HOME` only when you intentionally want an
@@ -47,13 +76,26 @@ node dist/cli.js install-client claude
 node dist/cli.js install-client cursor
 ```
 
+Agents can use `memory_recall` to recover a forgotten discovery and
+`memory_context_pack` to load a bounded project brief with sources, dates, and
+evidence status. `memory_timeline` groups the same memories by publication,
+capture, or observation date. The equivalent CLI commands are:
+
+```bash
+node dist/cli.js recall "the MCP memory tool I saw last month" --project agent-memory
+node dist/cli.js context --project agent-memory --output context/agent-memory.md
+node dist/cli.js timeline --date-field first_seen --group-by week
+```
+
 ## What v0.1 includes
 
 - Local SQLite storage and full-text search.
 - Idempotent JSON and URL imports.
 - Processing, evidence, and decision lifecycles.
 - Projects with transparent relevance scores.
-- Timeline queries using published, first-seen, and last-seen dates.
+- Timeline views grouped by day, week, or month using published, first-seen, and last-seen dates.
+- Recall forgotten discoveries with project-aware evidence ranking.
+- Generate compact Markdown context packs for individual projects.
 - Read/write MCP tools with explicit annotations.
 - Local dashboard and browser capture extension.
 - Optional local enrichment through Ollama; core features work without it.
@@ -75,6 +117,10 @@ Public post URLs can also be enriched with local collectors such as `gallery-dl`
 - Tokens, cookies, and passwords are not accepted in imports.
 - The public repository contains only synthetic examples.
 - Destructive social cleanup is intentionally outside v0.1.
+
+## Current status
+
+The public alpha already includes the local store, browser capture extension, timeline, recall, project context packs, MCP tools, and explainable freshness review. It does not claim to be an autonomous truth oracle: external release, pricing, or changelog verification is a planned enrichment step.
 
 ## Roadmap
 
@@ -110,6 +156,8 @@ local-first release.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md). Never attach a real personal
 vault or browser export to a public issue.
+
+If FeedRecall helps you recover one forgotten tool or decision, starring the repository and sharing a reproducible use case are the most useful ways to support it.
 
 ## License
 

@@ -1,6 +1,10 @@
 import type { ToolAnnotations } from "@modelcontextprotocol/sdk/types.js"
 import { z } from "zod"
+import { buildContextPack } from "../context-pack.js"
+import { recall } from "../recall.js"
+import { timelineDateFields, timelineGroupings } from "../storage/types.js"
 import type { Vault } from "../storage/vault.js"
+import { timelineBoundarySchema } from "../timeline.js"
 
 type ToolDefinition = {
   readonly name: string
@@ -38,6 +42,18 @@ const recentTool = {
   description: "List recently published or first-seen discoveries.",
   annotations: readOnly,
 } satisfies ToolDefinition
+const timelineTool = {
+  name: "memory_timeline",
+  description:
+    "Group discoveries by day, week, or month using their published, first-seen, or last-seen date.",
+  annotations: readOnly,
+} satisfies ToolDefinition
+const obsolescenceTool = {
+  name: "memory_obsolescence",
+  description:
+    "Explain which discoveries may have expired or been replaced, without deleting or changing external likes.",
+  annotations: readOnly,
+} satisfies ToolDefinition
 const projectTool = {
   name: "memory_for_project",
   description: "Return the small, ranked context pack relevant to one project.",
@@ -46,6 +62,18 @@ const projectTool = {
 const inboxTool = {
   name: "inbox_list",
   description: "List newly captured discoveries that still need review.",
+  annotations: readOnly,
+} satisfies ToolDefinition
+const recallTool = {
+  name: "memory_recall",
+  description:
+    "Recall the strongest matching discoveries and explain their project relevance and evidence.",
+  annotations: readOnly,
+} satisfies ToolDefinition
+const contextTool = {
+  name: "memory_context_pack",
+  description:
+    "Build a compact Markdown context pack for one project, with provenance and evidence.",
   annotations: readOnly,
 } satisfies ToolDefinition
 const markTool = {
@@ -58,8 +86,12 @@ export const toolDefinitions: readonly ToolDefinition[] = [
   searchTool,
   getTool,
   recentTool,
+  timelineTool,
+  obsolescenceTool,
   projectTool,
   inboxTool,
+  recallTool,
+  contextTool,
   markTool,
 ]
 
@@ -76,6 +108,27 @@ const GetInput = z.object({ id: z.string().min(1) })
 const ProjectInput = z.object({
   project: z.string().min(1),
   limit: z.number().int().min(1).max(50).default(15),
+})
+const RecallInput = z.object({
+  query: z.string().default(""),
+  project: z.string().optional(),
+  limit: z.number().int().min(1).max(50).default(10),
+})
+const ContextInput = z.object({
+  project: z.string().min(1),
+  limit: z.number().int().min(1).max(50).default(20),
+})
+const TimelineInput = z.object({
+  date_field: z.enum(timelineDateFields).default("published"),
+  group_by: z.enum(timelineGroupings).default("day"),
+  project: z.string().min(1).optional(),
+  after: timelineBoundarySchema.optional(),
+  before: timelineBoundarySchema.optional(),
+  limit: z.number().int().min(1).max(500).default(100),
+})
+const ObsolescenceInput = z.object({
+  as_of: z.iso.datetime({ offset: true }).optional(),
+  limit: z.number().int().min(1).max(500).default(500),
 })
 const MarkInput = z.object({
   id: z.string().min(1),
@@ -129,6 +182,42 @@ export function registerTools(
   )
 
   server.registerTool(
+    timelineTool.name,
+    {
+      description: timelineTool.description,
+      inputSchema: TimelineInput,
+      annotations: timelineTool.annotations,
+    },
+    ({ date_field, group_by, project, after, before, limit }) =>
+      result(
+        vault.timeline({
+          dateField: date_field,
+          groupBy: group_by,
+          ...(project ? { project } : {}),
+          ...(after ? { after } : {}),
+          ...(before ? { before } : {}),
+          limit,
+        }),
+      ),
+  )
+
+  server.registerTool(
+    obsolescenceTool.name,
+    {
+      description: obsolescenceTool.description,
+      inputSchema: ObsolescenceInput,
+      annotations: obsolescenceTool.annotations,
+    },
+    ({ as_of, limit }) =>
+      result(
+        vault.obsolescence({
+          ...(as_of ? { asOf: as_of } : {}),
+          limit,
+        }),
+      ),
+  )
+
+  server.registerTool(
     projectTool.name,
     {
       description: projectTool.description,
@@ -151,6 +240,26 @@ export function registerTools(
           .search({ query: "", limit })
           .filter((memory) => memory.processing.status === "captured"),
       ),
+  )
+
+  server.registerTool(
+    recallTool.name,
+    {
+      description: recallTool.description,
+      inputSchema: RecallInput,
+      annotations: recallTool.annotations,
+    },
+    (input) => result(recall(vault, input)),
+  )
+
+  server.registerTool(
+    contextTool.name,
+    {
+      description: contextTool.description,
+      inputSchema: ContextInput,
+      annotations: contextTool.annotations,
+    },
+    (input) => result(buildContextPack(vault, input)),
   )
 
   server.registerTool(

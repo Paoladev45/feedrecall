@@ -2,7 +2,9 @@ import {
   Archive,
   Boxes,
   CalendarDays,
+  ClockAlert,
   Database,
+  ExternalLink,
   FolderKanban,
   Inbox,
   Lightbulb,
@@ -15,25 +17,37 @@ import { useMemo, useRef } from "react"
 import { DiscoveryRow } from "./components/DiscoveryRow.js"
 import { EvidenceBadge } from "./components/EvidenceBadge.js"
 import { MemoryDetail } from "./components/MemoryDetail.js"
+import { ObsolescenceBand } from "./components/ObsolescenceBand.js"
+import { TimelineBand } from "./components/TimelineBand.js"
 import { useMemoryFeed } from "./use-memory-feed.js"
 
 export function App() {
   const {
     memories,
+    projects,
+    selectedMemory,
     stats,
     query,
     setQuery,
     evidence,
     setEvidence,
     selectedId,
-    setSelectedId,
+    selectMemory,
+    inspectMemory: loadMemory,
+    timeline,
+    obsolescence,
+    dateField,
+    setDateField,
+    groupBy,
+    setGroupBy,
     error,
   } = useMemoryFeed()
   const detailPaneRef = useRef<HTMLElement>(null)
 
   const selected = useMemo(
-    () => memories.find((memory) => memory.id === selectedId) ?? memories[0] ?? null,
-    [memories, selectedId],
+    () =>
+      selectedMemory ?? memories.find((memory) => memory.id === selectedId) ?? memories[0] ?? null,
+    [memories, selectedId, selectedMemory],
   )
   const opportunities = memories
     .filter(
@@ -42,8 +56,8 @@ export function App() {
     )
     .slice(0, 4)
 
-  const inspectMemory = (id: string) => {
-    setSelectedId(id)
+  const inspectMemory = async (id: string) => {
+    await loadMemory(id)
     if (!window.matchMedia("(max-width: 900px)").matches) return
     window.requestAnimationFrame(() => {
       const detailPane = detailPaneRef.current
@@ -66,29 +80,38 @@ export function App() {
           <strong>FeedRecall</strong>
         </div>
         <nav aria-label="Primary navigation">
-          <a className="nav-item nav-item--active" href="#today">
+          <a className="nav-item nav-item--active" href="#today" aria-label="Inbox" title="Inbox">
             <Inbox size={17} />
-            Inbox <b>{stats.needsReview}</b>
+            <span>Inbox</span> <b>{stats.needsReview}</b>
           </a>
-          <a className="nav-item" href="#projects">
+          <a className="nav-item" href="#projects" aria-label="Projects" title="Projects">
             <FolderKanban size={17} />
-            Projects <b>{stats.projects}</b>
+            <span>Projects</span> <b>{stats.projects}</b>
           </a>
-          <a className="nav-item" href="#timeline">
+          <a className="nav-item" href="#timeline-view" aria-label="Timeline" title="Timeline">
             <CalendarDays size={17} />
-            Timeline
+            <span>Timeline</span>
           </a>
-          <a className="nav-item" href="#opportunities">
+          <a className="nav-item" href="#review" aria-label="Review" title="Review">
+            <ClockAlert size={17} />
+            <span>Review</span>
+          </a>
+          <a
+            className="nav-item"
+            href="#opportunities"
+            aria-label="Opportunities"
+            title="Opportunities"
+          >
             <Lightbulb size={17} />
-            Opportunities
+            <span>Opportunities</span>
           </a>
-          <a className="nav-item" href="#sources">
+          <a className="nav-item" href="#source-detail" aria-label="Sources" title="Sources">
             <Database size={17} />
-            Sources
+            <span>Sources</span>
           </a>
-          <a className="nav-item" href="#archive">
+          <a className="nav-item" href="#archive" aria-label="Archive" title="Archive">
             <Archive size={17} />
-            Archive
+            <span>Archive</span>
           </a>
         </nav>
         <div className="sidebar-footer">
@@ -190,7 +213,7 @@ export function App() {
                   key={memory.id}
                   memory={memory}
                   selected={memory.id === selected?.id}
-                  onSelect={(next) => setSelectedId(next.id)}
+                  onSelect={selectMemory}
                 />
               ))
             )}
@@ -208,6 +231,59 @@ export function App() {
             )}
           </aside>
         </section>
+        <section className="projects-band" id="projects" aria-labelledby="projects-title">
+          <div className="band-heading">
+            <div>
+              <FolderKanban size={18} />
+              <h2 id="projects-title">Projects</h2>
+            </div>
+            <span>{projects.length} active contexts</span>
+          </div>
+          {projects.length === 0 ? (
+            <div className="state-message">No projects imported yet.</div>
+          ) : (
+            <div className="project-list">
+              {projects.map((project) => (
+                <article className="project-row" key={project.slug}>
+                  <div className="project-identity">
+                    <span className={`project-status project-status--${project.status}`}>
+                      {projectStatusLabels[project.status]}
+                    </span>
+                    <strong>{project.name}</strong>
+                    <p>{project.description}</p>
+                  </div>
+                  <div className="project-facts">
+                    <span>
+                      <b>Goal</b>
+                      {project.goals[0] ?? "No goal recorded"}
+                    </span>
+                    <span>
+                      <b>Stack</b>
+                      {project.technologies.slice(0, 4).join(" / ") || "No technologies recorded"}
+                    </span>
+                  </div>
+                  <div className="project-links">
+                    {project.repositories.slice(0, 2).map((repository) => (
+                      <a key={repository} href={repository} target="_blank" rel="noreferrer">
+                        <ExternalLink size={13} aria-hidden="true" />
+                        Repository
+                      </a>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+        </section>
+        <TimelineBand
+          timeline={timeline}
+          dateField={dateField}
+          groupBy={groupBy}
+          onDateFieldChange={setDateField}
+          onGroupByChange={setGroupBy}
+          onInspect={inspectMemory}
+        />
+        <ObsolescenceBand result={obsolescence} onInspect={inspectMemory} />
         <section className="opportunities" id="opportunities">
           <div className="band-heading">
             <div>
@@ -228,7 +304,7 @@ export function App() {
                 <span className="opportunity-next">Review for project fit</span>
                 <EvidenceBadge status={memory.evidence.status} />
                 <b>{Math.round((memory.relevance[0]?.score ?? 0) * 100)}%</b>
-                <button type="button" onClick={() => inspectMemory(memory.id)}>
+                <button type="button" onClick={() => void inspectMemory(memory.id)}>
                   Inspect
                 </button>
               </div>
@@ -247,3 +323,10 @@ export function App() {
     </div>
   )
 }
+
+const projectStatusLabels = {
+  idea: "Idea",
+  active: "Active",
+  paused: "Paused",
+  completed: "Completed",
+} as const

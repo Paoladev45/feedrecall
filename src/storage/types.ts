@@ -9,6 +9,30 @@ export type SearchInput = {
   readonly limit?: number
 }
 
+export const timelineDateFields = ["published", "first_seen", "last_seen"] as const
+export const timelineGroupings = ["day", "week", "month"] as const
+
+export type TimelineDateField = (typeof timelineDateFields)[number]
+export type TimelineGroupBy = (typeof timelineGroupings)[number]
+
+export type TimelineInput = {
+  readonly dateField?: TimelineDateField
+  readonly groupBy?: TimelineGroupBy
+  readonly project?: string
+  readonly after?: string
+  readonly before?: string
+  readonly limit?: number
+}
+
+export type ResolvedTimelineInput = {
+  readonly dateField: TimelineDateField
+  readonly groupBy: TimelineGroupBy
+  readonly project: string | null
+  readonly after?: string
+  readonly before?: string
+  readonly limit: number
+}
+
 export type ImportCounts = {
   readonly inserted: number
   readonly updated: number

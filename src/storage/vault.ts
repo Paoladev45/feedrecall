@@ -7,13 +7,30 @@ import {
   ProjectSchema,
   type Relevance,
 } from "../model.js"
+import type { ObsolescenceInput, ObsolescenceResult } from "../obsolescence.js"
+import { assessObsolescence } from "../obsolescence.js"
+import type { TimelineResult } from "../timeline.js"
+import { buildTimeline, resolveTimelineInput } from "../timeline.js"
 import { markMemory, memoryEvents, saveSnapshot, vaultStats } from "./lifecycle.js"
 import { memoryValues, writeMemory } from "./memory-write.js"
-import { findMemory, relevanceFor, searchMemories } from "./queries.js"
+import {
+  findMemory,
+  listMemories,
+  relevanceFor,
+  searchMemories,
+  timelineMemories,
+} from "./queries.js"
 import { calculateRelevance } from "./relevance.js"
 import { toProject } from "./rows.js"
 import { schema } from "./schema.js"
-import type { ImportCounts, LifecycleEvent, MarkInput, SearchInput, VaultStats } from "./types.js"
+import type {
+  ImportCounts,
+  LifecycleEvent,
+  MarkInput,
+  SearchInput,
+  TimelineInput,
+  VaultStats,
+} from "./types.js"
 
 export type { ImportCounts, LifecycleEvent, MarkInput, SearchInput, VaultStats } from "./types.js"
 
@@ -68,6 +85,20 @@ export class Vault {
 
   search(input: SearchInput): readonly MemoryRecord[] {
     return searchMemories(this.#database, input, (id) => this.#relevance(id))
+  }
+
+  timeline(input: TimelineInput = {}): TimelineResult {
+    const resolved = resolveTimelineInput(input)
+    const memories = timelineMemories(this.#database, resolved, (id) => this.#relevance(id))
+    return buildTimeline(memories, resolved)
+  }
+
+  obsolescence(input: ObsolescenceInput = {}): ObsolescenceResult {
+    const limit = input.limit ?? 500
+    return assessObsolescence(
+      listMemories(this.#database, limit, (id) => this.#relevance(id)),
+      input,
+    )
   }
 
   saveProject(input: Project): void {
