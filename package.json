@@ -15,7 +15,13 @@
     "agent-memory",
     "knowledge-management",
     "local-first",
-    "bookmarks"
+    "bookmarks",
+    "social-bookmarks",
+    "temporal-memory",
+    "codex",
+    "claude-code",
+    "cursor",
+    "sqlite"
   ],
   "bin": {
     "feedrecall": "dist/cli.js"

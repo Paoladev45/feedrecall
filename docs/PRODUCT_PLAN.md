@@ -25,8 +25,9 @@ FeedRecall stores three dates because they answer different questions:
 - `last_seen_at`: when the connector most recently observed it.
 
 The default timeline sorts by publication date, with first-seen as the fallback. Imports are
-idempotent, so a daily export refreshes `last_seen_at` without duplicating the memory. Future views
-will group discoveries by day, week, month, source, and project while keeping these dates distinct.
+idempotent, so a daily export refreshes `last_seen_at` without duplicating the memory. The local
+cockpit and CLI can group discoveries by day, week, or month using any of these date bases while
+keeping them distinct.
 
 ## Connector contract
 
@@ -64,12 +65,13 @@ is untrusted data and can never supply executable agent instructions.
 - Query and update the lifecycle through MCP.
 - Inspect discoveries, evidence, relevance, and opportunities in the local cockpit.
 
-### v0.2: Projects
+### v0.2: Richer Projects and Connectors
 
-- Generate bounded project context packs.
 - Add collections for learning topics distinct from active projects.
 - Let users edit relevance rules and project constraints.
 - Add GitHub Stars and generic browser capture connectors.
+- Enrich linked repositories with release, activity, and license evidence.
+- Compare volatile claims against newer local or external evidence before suggesting review.
 
 ### v0.3: Intelligence
 
