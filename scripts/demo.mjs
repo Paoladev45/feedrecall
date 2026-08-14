@@ -7,25 +7,8 @@ import { findAvailablePort } from "./demo-port.mjs"
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
 const cliPath = path.join(root, "dist", "cli.js")
-const corepackPath = path.join(
-  path.dirname(process.execPath),
-  "node_modules",
-  "corepack",
-  "dist",
-  "corepack.js",
-)
 const demoHome = mkdtempSync(path.join(os.tmpdir(), "feedrecall-demo-"))
 const environment = { ...process.env, FEEDRECALL_HOME: demoHome }
-
-function runPackageManager(args) {
-  const result = spawnSync(process.execPath, [corepackPath, ...args], {
-    cwd: root,
-    env: environment,
-    stdio: "inherit",
-  })
-  if (result.error) throw result.error
-  if (result.status !== 0) process.exit(result.status ?? 1)
-}
 
 function runCli(args) {
   const result = spawnSync(process.execPath, [cliPath, ...args], {
@@ -37,7 +20,6 @@ function runCli(args) {
   if (result.status !== 0) process.exit(result.status ?? 1)
 }
 
-runPackageManager(["pnpm", "run", "build"])
 runCli(["init"])
 runCli(["import", path.join(root, "examples", "discoveries.json")])
 runCli(["import-projects", path.join(root, "examples", "projects.json")])

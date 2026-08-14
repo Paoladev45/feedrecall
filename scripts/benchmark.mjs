@@ -7,13 +7,6 @@ import { fileURLToPath } from "node:url"
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
 const cliPath = path.join(root, "dist", "cli.js")
-const corepackPath = path.join(
-  path.dirname(process.execPath),
-  "node_modules",
-  "corepack",
-  "dist",
-  "corepack.js",
-)
 const benchmarkHome = mkdtempSync(path.join(os.tmpdir(), "feedrecall-benchmark-"))
 const environment = { ...process.env, FEEDRECALL_HOME: benchmarkHome }
 const fixture = JSON.parse(readFileSync(path.join(root, "examples", "discoveries.json"), "utf8"))
@@ -48,20 +41,6 @@ writeFileSync(
   "utf8",
 )
 
-function runPackageManager(args) {
-  const result = spawnSync(process.execPath, [corepackPath, ...args], {
-    cwd: root,
-    env: environment,
-    encoding: "utf8",
-    stdio: ["ignore", "pipe", "pipe"],
-  })
-  if (result.error) throw result.error
-  if (result.status !== 0) {
-    process.stderr.write(result.stderr)
-    process.exit(result.status ?? 1)
-  }
-}
-
 function runCli(args) {
   const result = spawnSync(process.execPath, [cliPath, ...args], {
     cwd: root,
@@ -83,7 +62,6 @@ function measure(action) {
   return { milliseconds: Number((performance.now() - started).toFixed(2)), output }
 }
 
-runPackageManager(["pnpm", "run", "build:core"])
 runCli(["init"])
 const importResult = measure(() => runCli(["import", datasetFile]))
 runCli(["import-projects", projectFile])

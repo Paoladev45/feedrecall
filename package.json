@@ -48,8 +48,8 @@
     "format": "biome check --write .",
     "test": "vitest run",
     "check": "pnpm run typecheck && pnpm run lint && pnpm test && pnpm run build",
-    "demo": "node scripts/demo.mjs",
-    "benchmark": "node scripts/benchmark.mjs",
+    "demo": "pnpm run build && node scripts/demo.mjs",
+    "benchmark": "pnpm run build:core && node scripts/benchmark.mjs",
     "prepack": "pnpm run build"
   },
   "dependencies": {

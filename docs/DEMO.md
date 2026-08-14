@@ -12,6 +12,8 @@ pnpm demo
 
 Open the URL printed by the command. The demo creates a temporary vault from the synthetic examples and starts the local cockpit on the first free local port.
 
+The interactive cockpit is the synthetic-data demo. The CLI commands below are standalone examples for your configured local vault; they do not automatically reuse the temporary demo vault created in the first step.
+
 ## 2. Ask the memory layer a question
 
 ```bash
@@ -33,10 +35,9 @@ The generated Markdown is intentionally bounded. It gives an agent the project g
 ```bash
 pnpm exec feedrecall timeline --date-field published --group-by month
 pnpm exec feedrecall obsolescence
-pnpm exec feedrecall serve
 ```
 
-Open `http://127.0.0.1:4173/` after starting the server. The cockpit shows the same memories grouped by date and highlights items that may need review. It never removes a social like or bookmark.
+The running cockpit shows the synthetic memories grouped by date and highlights items that may need review. It never removes a social like or bookmark.
 
 ## 5. Connect an MCP client
 
