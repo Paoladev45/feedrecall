@@ -29,6 +29,7 @@ FeedRecall is a calm technical observatory: dense enough for daily review, light
 | Amber | `--amber` | `#a96508` | Claimed and pending review |
 | Amber pale | `--amber-pale` | `#fff3dc` | Claimed backgrounds |
 | Coral | `--coral` | `#c44735` | High-impact opportunities |
+| Coral pale | `--coral-pale` | `#fff0ed` | Expired review signals |
 | Focus | `--focus` | `#1367d1` | Keyboard focus ring |
 
 No purple palette, gradients, decorative blobs, or color without semantic meaning.
@@ -78,6 +79,24 @@ No purple palette, gradients, decorative blobs, or color without semantic meanin
 - Structure: project, discovery, impact, proposed next step.
 - States in v0.1: default, hover, inspect. Ignored and experiment-created arrive with v0.3.
 - Actions use icons with tooltips where the symbol is not universal.
+
+### Timeline Band
+- Structure: period header, grouped date labels, compact discovery entries, date-basis and grouping controls.
+- Variants: day, week, month; published, first seen, last seen; empty and undated.
+- Spacing: 16px inner rows, 24px band edges, 4px separators.
+- States: default, loading, empty, error, focus-visible controls.
+- Accessibility: controls have labels; each item retains title, source date, evidence, and source link, with an inspect action that can load a memory outside the active list filter.
+- Motion: no decorative motion; selected controls use the existing 120ms focus feedback.
+- Layout: full-width page band below the list-detail workspace; it collapses to a single column below 900px.
+
+### Obsolescence Review Row
+- Structure: status rail, discovery title, age/window metadata, explanation, related replacement, review action.
+- Variants: fresh, watch, likely expired, likely replaced; keep, review, archive candidate.
+- Spacing: 12px row padding, 8px metadata gap, 24px band edges.
+- States: default, empty, error, inspect.
+- Accessibility: status is textual and color is supplementary; recommendations never execute external cleanup.
+- Motion: none beyond focus and hover feedback on the inspect action.
+- Layout: full-width review band; rows reflow to two lines on mobile.
 
 ### Search Field
 - Structure: search icon, text input, clear button.

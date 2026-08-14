@@ -4,7 +4,7 @@ import { EvidenceBadge } from "./EvidenceBadge.js"
 export function MemoryDetail({ memory }: { readonly memory: Memory }) {
   return (
     <div className="detail-content">
-      <div className="detail-heading" id="sources">
+      <div className="detail-heading" id="source-detail">
         <span>
           {memory.source.platform} / {memory.source.type}
         </span>
@@ -24,7 +24,7 @@ export function MemoryDetail({ memory }: { readonly memory: Memory }) {
           </ul>
         </div>
       ) : null}
-      <div className="detail-section" id="projects">
+      <div className="detail-section" id="evidence">
         <h3>Evidence</h3>
         <div className="evidence-line">
           <EvidenceBadge status={memory.evidence.status} />

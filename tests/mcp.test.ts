@@ -47,6 +47,16 @@ describe("MCP contract", () => {
       evidence: { status: "verified", confidence: 0.8 },
     }
     vault.upsert(materializeRecord(input, "2026-08-13T09:00:00.000Z"))
+    vault.saveProject({
+      slug: "agent-memory",
+      name: "Agent Memory",
+      description: "Shared memory for coding agents.",
+      goals: ["find relevant discoveries"],
+      technologies: ["memory", "mcp"],
+      repositories: [],
+      status: "active",
+    })
+    vault.refreshRelevance("github:star:mcp-memory")
     const server = createMcpServer(vault)
     const client = new Client({ name: "feedrecall-test", version: "1.0.0" })
     const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair()
@@ -56,8 +66,33 @@ describe("MCP contract", () => {
       const tools = await client.listTools()
       const response = await client.callTool({ name: "memory_search", arguments: { query: "MCP" } })
 
-      expect(tools.tools.map((tool) => tool.name)).toContain("memory_search")
+      expect(tools.tools.map((tool) => tool.name)).toEqual(
+        expect.arrayContaining([
+          "memory_search",
+          "memory_recall",
+          "memory_context_pack",
+          "memory_timeline",
+        ]),
+      )
       expect(JSON.stringify(response)).toContain("MCP project memory")
+
+      const recallResponse = await client.callTool({
+        name: "memory_recall",
+        arguments: { query: "project memory" },
+      })
+      expect(JSON.stringify(recallResponse)).toContain("MCP project memory")
+
+      const contextResponse = await client.callTool({
+        name: "memory_context_pack",
+        arguments: { project: "agent-memory", limit: 1 },
+      })
+      expect(JSON.stringify(contextResponse)).toContain("# Agent Memory")
+
+      const timelineResponse = await client.callTool({
+        name: "memory_timeline",
+        arguments: { date_field: "published", group_by: "day" },
+      })
+      expect(JSON.stringify(timelineResponse)).toContain('"2026-08-13"')
     } finally {
       await client.close()
       await server.close()

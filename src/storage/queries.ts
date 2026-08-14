@@ -2,7 +2,7 @@ import type Database from "better-sqlite3"
 import { z } from "zod"
 import type { MemoryRecord, Relevance } from "../model.js"
 import { toMemory, toRelevance } from "./rows.js"
-import type { SearchInput } from "./types.js"
+import type { ResolvedTimelineInput, SearchInput } from "./types.js"
 
 export function findMemory(
   database: Database.Database,
@@ -22,7 +22,7 @@ export function searchMemories(
   relevanceFor: (id: string) => readonly Relevance[],
 ): readonly MemoryRecord[] {
   const conditions: string[] = []
-  const parameters: Record<string, string | number> = { limit: Math.min(input.limit ?? 25, 100) }
+  const parameters: Record<string, string | number> = { limit: Math.min(input.limit ?? 25, 500) }
   let join = ""
   const query = input.query.trim()
   if (query) {
@@ -56,6 +56,68 @@ export function searchMemories(
       ORDER BY COALESCE(m.published_at, m.first_seen_at) DESC LIMIT @limit
     `)
     .all(parameters)
+  return rows.map((row) => {
+    const parsed = z.object({ id: z.string() }).parse(row)
+    return toMemory(row, relevanceFor(parsed.id))
+  })
+}
+
+export function listMemories(
+  database: Database.Database,
+  limit: number,
+  relevanceFor: (id: string) => readonly Relevance[],
+): readonly MemoryRecord[] {
+  const rows = database
+    .prepare(`
+      SELECT * FROM memories
+      ORDER BY (published_at IS NULL) ASC, julianday(COALESCE(published_at, first_seen_at)) DESC, id ASC
+      LIMIT @limit
+    `)
+    .all({ limit })
+
+  return rows.map((row) => {
+    const parsed = z.object({ id: z.string() }).parse(row)
+    return toMemory(row, relevanceFor(parsed.id))
+  })
+}
+
+export function timelineMemories(
+  database: Database.Database,
+  input: ResolvedTimelineInput,
+  relevanceFor: (id: string) => readonly Relevance[],
+): readonly MemoryRecord[] {
+  const dateColumn = {
+    published: "m.published_at",
+    first_seen: "m.first_seen_at",
+    last_seen: "m.last_seen_at",
+  }[input.dateField]
+  const conditions: string[] = []
+  const parameters: Record<string, string | number> = { limit: input.limit }
+  let join = ""
+
+  if (input.project) {
+    join += " JOIN relevance r_filter ON r_filter.memory_id = m.id"
+    conditions.push("r_filter.project_slug = @project")
+    parameters["project"] = input.project
+  }
+  if (input.after) {
+    conditions.push(`julianday(${dateColumn}) >= julianday(@after)`)
+    parameters["after"] = input.after
+  }
+  if (input.before) {
+    conditions.push(`julianday(${dateColumn}) <= julianday(@before)`)
+    parameters["before"] = input.before
+  }
+
+  const where = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : ""
+  const rows = database
+    .prepare(`
+      SELECT DISTINCT m.* FROM memories m${join} ${where}
+      ORDER BY (${dateColumn} IS NULL) ASC, julianday(${dateColumn}) DESC, m.id ASC
+      LIMIT @limit
+    `)
+    .all(parameters)
+
   return rows.map((row) => {
     const parsed = z.object({ id: z.string() }).parse(row)
     return toMemory(row, relevanceFor(parsed.id))

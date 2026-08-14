@@ -18,6 +18,7 @@ It is not a generic vector database, a social-network clone, or an autonomous tr
 - Track `published_at`, `first_seen_at`, and `last_seen_at` separately.
 - Classify processing, evidence, and decision states independently.
 - Search by text, source, topic, project, evidence, and date.
+- Group discoveries into day, week, or month timelines using published, first-seen, or last-seen dates.
 - Expose the same tools through a local MCP server.
 - Run without a model; optionally enrich through local Ollama.
 
@@ -25,8 +26,11 @@ It is not a generic vector database, a social-network clone, or an autonomous tr
 
 - Model projects as goals, technologies, repositories, problems, discoveries, experiments, and decisions.
 - Produce transparent relevance scores with human-editable reasons.
-- Generate small project context packs instead of dumping the entire vault into an agent.
+- Generate small project context packs instead of dumping the entire vault into an agent. The CLI
+  command is `feedrecall context --project <slug>` and MCP exposes `memory_context_pack`.
 - Add Collections for learning themes distinct from active Projects.
+- Recall forgotten discoveries with evidence-aware ranking through `feedrecall recall` and
+  `memory_recall`.
 
 ## v0.3: Intelligence
 

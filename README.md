@@ -25,6 +25,9 @@ node dist/cli.js init
 node dist/cli.js import examples/discoveries.json
 node dist/cli.js import-projects examples/projects.json
 node dist/cli.js search "Roblox MCP"
+node dist/cli.js recall "MCP memory" --project agent-memory
+node dist/cli.js context --project agent-memory --output context/agent-memory.md
+node dist/cli.js timeline --date-field published --group-by month
 node dist/cli.js serve
 ```
 
@@ -47,13 +50,26 @@ node dist/cli.js install-client claude
 node dist/cli.js install-client cursor
 ```
 
+Agents can use `memory_recall` to recover a forgotten discovery and
+`memory_context_pack` to load a bounded project brief with sources, dates, and
+evidence status. `memory_timeline` groups the same memories by publication,
+capture, or observation date. The equivalent CLI commands are:
+
+```bash
+node dist/cli.js recall "the MCP memory tool I saw last month" --project agent-memory
+node dist/cli.js context --project agent-memory --output context/agent-memory.md
+node dist/cli.js timeline --date-field first_seen --group-by week
+```
+
 ## What v0.1 includes
 
 - Local SQLite storage and full-text search.
 - Idempotent JSON and URL imports.
 - Processing, evidence, and decision lifecycles.
 - Projects with transparent relevance scores.
-- Timeline queries using published, first-seen, and last-seen dates.
+- Timeline views grouped by day, week, or month using published, first-seen, and last-seen dates.
+- Recall forgotten discoveries with project-aware evidence ranking.
+- Generate compact Markdown context packs for individual projects.
 - Read/write MCP tools with explicit annotations.
 - Local dashboard and browser capture extension.
 - Optional local enrichment through Ollama; core features work without it.
