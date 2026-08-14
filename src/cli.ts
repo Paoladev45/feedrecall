@@ -4,15 +4,14 @@ import path from "node:path"
 import { fileURLToPath } from "node:url"
 import { Command } from "commander"
 import { z } from "zod"
-import { clientNames, installClient } from "./client-install.js"
+import { addOperationalCommands } from "./cli/operational-commands.js"
 import { buildContextPack, ProjectNotFoundError } from "./context-pack.js"
 import { OllamaClient } from "./enrichment/ollama.js"
 import { processVault } from "./enrichment/process.js"
-import { startHttpServer } from "./http-server.js"
+import { createGrowthCommand } from "./growth/command.js"
 import { importFile } from "./importers/json.js"
 import { importProjects } from "./importers/projects.js"
 import { importUrl } from "./importers/url.js"
-import { serveMcp } from "./mcp/server.js"
 import { ObsolescenceInputSchema } from "./obsolescence.js"
 import { databasePath, dataDirectory } from "./paths.js"
 import { recall } from "./recall.js"
@@ -28,6 +27,14 @@ const program = new Command()
   .name("feedrecall")
   .description("Local-first, project-aware memory for AI agents")
   .version("0.1.0")
+
+program.addCommand(createGrowthCommand())
+
+addOperationalCommands(program, {
+  openVault,
+  cliPath: fileURLToPath(import.meta.url),
+  home: process.env["USERPROFILE"] ?? process.env["HOME"] ?? ".",
+})
 
 program
   .command("init")
@@ -241,41 +248,6 @@ program
     } finally {
       vault.close()
     }
-  })
-
-program
-  .command("mcp")
-  .description("Start the MCP server over stdio")
-  .action(async () => {
-    await serveMcp(openVault())
-  })
-
-program
-  .command("serve")
-  .option("--port <port>", "local port", "4173")
-  .description("Start the local cockpit")
-  .action((options) => {
-    const here = path.dirname(fileURLToPath(import.meta.url))
-    startHttpServer(
-      openVault(),
-      z.coerce.number().int().min(1024).max(65_535).parse(options.port),
-      path.join(here, "web"),
-    )
-  })
-
-program
-  .command("install-client")
-  .argument("<client>")
-  .description("Connect FeedRecall to Codex, Claude Code, or Cursor")
-  .action((client) => {
-    const parsed = z.enum(clientNames).parse(client)
-    console.log(
-      installClient(
-        parsed,
-        fileURLToPath(import.meta.url),
-        process.env["USERPROFILE"] ?? process.env["HOME"] ?? ".",
-      ),
-    )
   })
 
 await program.parseAsync(process.argv)

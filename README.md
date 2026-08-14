@@ -87,6 +87,17 @@ node dist/cli.js context --project agent-memory --output context/agent-memory.md
 node dist/cli.js timeline --date-field first_seen --group-by week
 ```
 
+## Safe OSS growth drafts
+
+FeedRecall can inspect its recent Git history and create a reviewable campaign draft when a change is meaningful to users:
+
+```bash
+node dist/cli.js growth draft --repo . --channel x --output .growth/growth-plan.json
+node dist/cli.js growth measure examples/growth-metrics.json
+```
+
+This is deliberately draft-first. It never stars repositories, creates accounts, sends mass replies, or publishes to a social account. See [the growth agent policy](docs/GROWTH_AGENT.md) for the scheduled read-only workflow and approval boundaries.
+
 ## What v0.1 includes
 
 - Local SQLite storage and full-text search.

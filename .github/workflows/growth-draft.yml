@@ -1,0 +1,36 @@
+name: Growth draft
+
+on:
+  schedule:
+    - cron: "0 8 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build:core
+      - name: Create reviewable draft
+        run: >-
+          node dist/cli.js growth draft
+          --repo .
+          --repository FeedRecall
+          --repo-url https://github.com/Paoladev45/feedrecall
+          --release unreleased
+          --channel x
+          --output artifacts/growth-plan.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: feedrecall-growth-draft-${{ github.run_id }}
+          path: artifacts/growth-plan.json
+          if-no-files-found: error
+          retention-days: 14
