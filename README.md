@@ -16,6 +16,18 @@ No X API. No cloud account. No telemetry. Your archive stays on your machine.
 
 ![FeedRecall local memory cockpit](docs/assets/feedrecall-cockpit.jpg)
 
+## Try it in one minute
+
+The interactive demo uses only synthetic records and creates its vault in a temporary directory. It never reads your browser, X account, cookies, or private files.
+
+```bash
+corepack enable
+pnpm install --frozen-lockfile
+pnpm demo
+```
+
+Open the URL printed by the command to inspect the inbox, evidence states, project relevance, timeline, and review queue. The demo automatically chooses the next free local port when `4173` is already in use. Press `Ctrl+C` to stop the local cockpit.
+
 ## Why
 
 Saving a discovery is only the beginning:
@@ -40,22 +52,23 @@ The goal is simple: recover a useful discovery in seconds, then remember what ha
 
 ## Quick start
 
-The demo uses only synthetic examples. It never touches your social accounts.
+The demo vault is synthetic. It never touches your social accounts.
 
 ```bash
-npm install
-npm run build
-node dist/cli.js init
-node dist/cli.js import examples/discoveries.json
-node dist/cli.js import-projects examples/projects.json
-node dist/cli.js search "Roblox MCP"
-node dist/cli.js recall "MCP memory" --project agent-memory
-node dist/cli.js context --project agent-memory --output context/agent-memory.md
-node dist/cli.js timeline --date-field published --group-by month
-node dist/cli.js serve
+corepack enable
+pnpm install --frozen-lockfile
+pnpm run build
+pnpm exec feedrecall init
+pnpm exec feedrecall import examples/discoveries.json
+pnpm exec feedrecall import-projects examples/projects.json
+pnpm exec feedrecall search "Roblox MCP"
+pnpm exec feedrecall recall "MCP memory" --project agent-memory
+pnpm exec feedrecall context --project agent-memory --output context/agent-memory.md
+pnpm exec feedrecall timeline --date-field published --group-by month
+pnpm exec feedrecall serve
 ```
 
-For a guided walkthrough, see [the three-minute demo](docs/DEMO.md).
+For the complete walkthrough, see [the one-minute demo](docs/DEMO.md).
 
 The canonical database is `~/.feedrecall/feedrecall.db`, so local agents share one memory even when
 they run from different project folders. Set `FEEDRECALL_HOME` only when you intentionally want an
@@ -65,15 +78,15 @@ Optional local enrichment requires [Ollama](https://ollama.com/) and a local mod
 
 ```bash
 ollama pull qwen3:4b
-node dist/cli.js process --model qwen3:4b
+pnpm exec feedrecall process --model qwen3:4b
 ```
 
 Then connect the local MCP server:
 
 ```bash
-node dist/cli.js install-client codex
-node dist/cli.js install-client claude
-node dist/cli.js install-client cursor
+pnpm exec feedrecall install-client codex
+pnpm exec feedrecall install-client claude
+pnpm exec feedrecall install-client cursor
 ```
 
 Agents can use `memory_recall` to recover a forgotten discovery and
@@ -82,10 +95,22 @@ evidence status. `memory_timeline` groups the same memories by publication,
 capture, or observation date. The equivalent CLI commands are:
 
 ```bash
-node dist/cli.js recall "the MCP memory tool I saw last month" --project agent-memory
-node dist/cli.js context --project agent-memory --output context/agent-memory.md
-node dist/cli.js timeline --date-field first_seen --group-by week
+pnpm exec feedrecall recall "the MCP memory tool I saw last month" --project agent-memory
+pnpm exec feedrecall context --project agent-memory --output context/agent-memory.md
+pnpm exec feedrecall timeline --date-field first_seen --group-by week
 ```
+
+See [the MCP client guide](docs/CLIENTS.md) for Codex, Claude Code, Cursor, Claude Desktop, Cline, Gemini CLI, OpenCode, and other stdio-compatible clients.
+
+## Reproducible benchmark
+
+Run the benchmark locally with synthetic data:
+
+```bash
+pnpm benchmark
+```
+
+It builds the core, imports 1,000 deterministic records into a temporary vault, measures import, search, recall, and timeline latency, then reports the database size. No network request or personal data is used. Results depend on your machine, so the command is the source of truth.
 
 ## What v0.1 includes
 

@@ -1,21 +1,21 @@
-# FeedRecall in three minutes
+# FeedRecall in one minute
 
 This walkthrough uses the synthetic examples committed in the repository. It does not read your browser, X account, cookies, or private files.
 
-## 1. Build and load the example vault
+## 1. Start the interactive demo
 
 ```bash
-npm install
-npm run build
-node dist/cli.js init
-node dist/cli.js import examples/discoveries.json
-node dist/cli.js import-projects examples/projects.json
+corepack enable
+pnpm install --frozen-lockfile
+pnpm demo
 ```
+
+Open the URL printed by the command. The demo creates a temporary vault from the synthetic examples and starts the local cockpit on the first free local port.
 
 ## 2. Ask the memory layer a question
 
 ```bash
-node dist/cli.js recall "MCP memory" --project agent-memory
+pnpm exec feedrecall recall "MCP memory" --project agent-memory
 ```
 
 The result is ranked by text match, project relevance, evidence, priority, and recency. Every match keeps its source URL and evidence status.
@@ -23,7 +23,7 @@ The result is ranked by text match, project relevance, evidence, priority, and r
 ## 3. Create an agent context pack
 
 ```bash
-node dist/cli.js context --project agent-memory --output context/agent-memory.md
+pnpm exec feedrecall context --project agent-memory --output context/agent-memory.md
 ```
 
 The generated Markdown is intentionally bounded. It gives an agent the project goals, relevant discoveries, provenance, and safety notes without loading the entire vault.
@@ -31,9 +31,9 @@ The generated Markdown is intentionally bounded. It gives an agent the project g
 ## 4. Inspect the timeline and review queue
 
 ```bash
-node dist/cli.js timeline --date-field published --group-by month
-node dist/cli.js obsolescence
-node dist/cli.js serve
+pnpm exec feedrecall timeline --date-field published --group-by month
+pnpm exec feedrecall obsolescence
+pnpm exec feedrecall serve
 ```
 
 Open `http://127.0.0.1:4173/` after starting the server. The cockpit shows the same memories grouped by date and highlights items that may need review. It never removes a social like or bookmark.
@@ -41,9 +41,9 @@ Open `http://127.0.0.1:4173/` after starting the server. The cockpit shows the s
 ## 5. Connect an MCP client
 
 ```bash
-node dist/cli.js install-client codex
-node dist/cli.js install-client claude
-node dist/cli.js install-client cursor
+pnpm exec feedrecall install-client codex
+pnpm exec feedrecall install-client claude
+pnpm exec feedrecall install-client cursor
 ```
 
 Then ask the client:
