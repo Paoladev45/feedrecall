@@ -4,8 +4,11 @@ import path from "node:path"
 
 const cliPath = path.resolve("dist", "cli.js")
 if (!existsSync(cliPath)) {
-  const packageManager = process.platform === "win32" ? "pnpm.cmd" : "pnpm"
-  const result = spawnSync(packageManager, ["run", "build:core"], { stdio: "inherit" })
+  const tsupCliPath = path.resolve("node_modules", "tsup", "dist", "cli-default.js")
+  const result = spawnSync(process.execPath, [tsupCliPath], {
+    stdio: "inherit",
+    windowsHide: true,
+  })
   if (result.error) throw result.error
   if (result.status !== 0) process.exitCode = result.status ?? 1
 }
