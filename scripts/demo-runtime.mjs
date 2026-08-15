@@ -9,8 +9,13 @@ export async function waitForHttp(url, timeoutMs = 5_000) {
   let lastError
 
   while (Date.now() < deadline) {
+    const controller = new AbortController()
+    const abortTimer = setTimeout(() => controller.abort(), Math.max(1, deadline - Date.now()))
     try {
-      const response = await fetch(expectedUrl, { redirect: "error" })
+      const response = await fetch(expectedUrl, {
+        redirect: "error",
+        signal: controller.signal,
+      })
       if (response.url !== expectedUrl.href) {
         lastError = new Error(`Unexpected readiness URL ${response.url}`)
       } else if (response.ok) {
@@ -20,6 +25,8 @@ export async function waitForHttp(url, timeoutMs = 5_000) {
       }
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error))
+    } finally {
+      clearTimeout(abortTimer)
     }
     await new Promise((resolve) => setTimeout(resolve, 25))
   }

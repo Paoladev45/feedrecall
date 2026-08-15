@@ -51,4 +51,31 @@ describe("demo runtime readiness", () => {
     // Then: the redirect cannot turn into a successful readiness result.
     await expect(readiness).rejects.toThrow("Demo server did not become ready")
   })
+
+  it("rejects when a readiness response stalls past the deadline", async () => {
+    // Given: a local server that accepts the request but never sends a response.
+    const server = createServer(() => {})
+    servers.push(server)
+    const port = await findAvailablePort(49_152)
+    await new Promise<void>((resolve) => server.listen(port, "127.0.0.1", resolve))
+
+    // When: the demo waits with a short readiness deadline.
+    const readiness = waitForHttp(`http://127.0.0.1:${port}/`, 100).then(
+      () => "resolved" as const,
+      () => "rejected" as const,
+    )
+    let graceTimer: ReturnType<typeof setTimeout> | undefined
+    const outcome = await Promise.race([
+      readiness,
+      new Promise<"hung">((resolve) => {
+        graceTimer = setTimeout(() => resolve("hung"), 500)
+      }),
+    ])
+    if (graceTimer) clearTimeout(graceTimer)
+    server.closeAllConnections()
+
+    // Then: the probe rejects instead of remaining pending.
+    expect(outcome).toBe("rejected")
+    await expect(readiness).resolves.toBe("rejected")
+  })
 })
