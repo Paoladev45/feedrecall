@@ -4,7 +4,7 @@ Thanks for helping turn saved discoveries into durable agent memory.
 
 ## Development
 
-Requirements: Node.js 22.5 or newer.
+Requirements: Node.js 22.12 or newer.
 
 ```bash
 corepack enable

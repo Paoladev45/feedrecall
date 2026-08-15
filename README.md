@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/Paoladev45/feedrecall/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Paoladev45/feedrecall/actions/workflows/ci.yml)
 [![License](https://img.shields.io/github/license/Paoladev45/feedrecall)](LICENSE)
-[![Node.js](https://img.shields.io/badge/node.js-22%2B-339933)](https://nodejs.org/)
+[![Node.js](https://img.shields.io/badge/node.js-22.12%2B-339933)](https://nodejs.org/)
 [![MCP](https://img.shields.io/badge/MCP-compatible-1367d1)](https://modelcontextprotocol.io/)
 [![GitHub stars](https://img.shields.io/github/stars/Paoladev45/feedrecall?style=social)](https://github.com/Paoladev45/feedrecall/stargazers)
 
