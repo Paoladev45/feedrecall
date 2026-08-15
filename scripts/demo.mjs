@@ -4,11 +4,15 @@ import os from "node:os"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 import { findAvailablePort } from "./demo-port.mjs"
+import { terminateChild, waitForHttp } from "./demo-runtime.mjs"
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
 const cliPath = path.join(root, "dist", "cli.js")
 const demoHome = mkdtempSync(path.join(os.tmpdir(), "feedrecall-demo-"))
 const environment = { ...process.env, FEEDRECALL_HOME: demoHome }
+let server
+let cleaned = false
+let shuttingDown = false
 
 function runCli(args) {
   const result = spawnSync(process.execPath, [cliPath, ...args], {
@@ -17,39 +21,69 @@ function runCli(args) {
     stdio: "inherit",
   })
   if (result.error) throw result.error
-  if (result.status !== 0) process.exit(result.status ?? 1)
-}
-
-runCli(["init"])
-runCli(["import", path.join(root, "examples", "discoveries.json")])
-runCli(["import-projects", path.join(root, "examples", "projects.json")])
-
-const requestedPort = Number(process.env["FEEDRECALL_DEMO_PORT"] ?? "4173")
-const port = await findAvailablePort(requestedPort)
-if (port !== requestedPort) {
-  console.log(`Port ${requestedPort} is busy; using ${port} for this demo.`)
-}
-
-console.log(`FeedRecall demo vault: ${demoHome}`)
-console.log(`Open http://127.0.0.1:${port}/ to inspect the synthetic cockpit.`)
-
-const server = spawn(process.execPath, [cliPath, "serve", "--port", String(port)], {
-  cwd: root,
-  env: environment,
-  stdio: "inherit",
-})
-
-function stopServer() {
-  if (!server.killed) server.kill()
+  if (result.status !== 0)
+    throw new Error(`FeedRecall command failed with status ${result.status ?? "unknown"}`)
 }
 
 function cleanupDemo() {
+  if (cleaned) return
+  cleaned = true
   rmSync(demoHome, { recursive: true, force: true })
 }
 
-process.on("SIGINT", stopServer)
-process.on("SIGTERM", stopServer)
-server.on("exit", (code) => {
+function stopServer() {
+  if (server) {
+    terminateChild(server)
+    return
+  }
   cleanupDemo()
-  process.exitCode = code ?? 0
-})
+}
+
+function fail(error) {
+  if (shuttingDown) return
+  shuttingDown = true
+  console.error(error instanceof Error ? error.message : String(error))
+  stopServer()
+  cleanupDemo()
+  process.exitCode = 1
+}
+
+function handleSignal(code) {
+  if (shuttingDown) return
+  shuttingDown = true
+  process.exitCode = code
+  stopServer()
+}
+
+process.once("SIGINT", () => handleSignal(130))
+process.once("SIGTERM", () => handleSignal(143))
+
+try {
+  runCli(["init"])
+  runCli(["import", path.join(root, "examples", "discoveries.json")])
+  runCli(["import-projects", path.join(root, "examples", "projects.json")])
+
+  const requestedPort = Number(process.env["FEEDRECALL_DEMO_PORT"] ?? "4173")
+  const port = await findAvailablePort(requestedPort)
+  if (port !== requestedPort) {
+    console.log(`Port ${requestedPort} is busy; using ${port} for this demo.`)
+  }
+
+  server = spawn(process.execPath, [cliPath, "serve", "--port", String(port)], {
+    cwd: root,
+    env: environment,
+    stdio: "inherit",
+  })
+  server.once("error", fail)
+  server.once("exit", (code) => {
+    cleanupDemo()
+    if (process.exitCode === undefined) process.exitCode = code ?? 0
+  })
+
+  const url = `http://127.0.0.1:${port}/`
+  await waitForHttp(url)
+  console.log(`FeedRecall demo vault: ${demoHome}`)
+  console.log(`Open ${url} to inspect the synthetic cockpit.`)
+} catch (error) {
+  fail(error)
+}

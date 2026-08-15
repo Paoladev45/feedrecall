@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process"
-import { mkdtempSync, readFileSync, statSync, writeFileSync } from "node:fs"
+import { mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs"
 import os from "node:os"
 import path from "node:path"
 import { performance } from "node:perf_hooks"
@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url"
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
 const cliPath = path.join(root, "dist", "cli.js")
 const benchmarkHome = mkdtempSync(path.join(os.tmpdir(), "feedrecall-benchmark-"))
+process.once("exit", () => rmSync(benchmarkHome, { recursive: true, force: true }))
 const environment = { ...process.env, FEEDRECALL_HOME: benchmarkHome }
 const fixture = JSON.parse(readFileSync(path.join(root, "examples", "discoveries.json"), "utf8"))
 const projectFile = path.join(root, "examples", "projects.json")

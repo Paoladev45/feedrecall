@@ -15,9 +15,9 @@ pnpm run build
 The existing helper configures Codex, Claude Code, and Cursor automatically:
 
 ```bash
-pnpm exec feedrecall install-client codex
-pnpm exec feedrecall install-client claude
-pnpm exec feedrecall install-client cursor
+pnpm feedrecall install-client codex
+pnpm feedrecall install-client claude
+pnpm feedrecall install-client cursor
 ```
 
 ## Other MCP clients

@@ -17,7 +17,7 @@ The interactive cockpit is the synthetic-data demo. The CLI commands below are s
 ## 2. Ask the memory layer a question
 
 ```bash
-pnpm exec feedrecall recall "MCP memory" --project agent-memory
+pnpm feedrecall recall "MCP memory" --project agent-memory
 ```
 
 The result is ranked by text match, project relevance, evidence, priority, and recency. Every match keeps its source URL and evidence status.
@@ -25,7 +25,7 @@ The result is ranked by text match, project relevance, evidence, priority, and r
 ## 3. Create an agent context pack
 
 ```bash
-pnpm exec feedrecall context --project agent-memory --output context/agent-memory.md
+pnpm feedrecall context --project agent-memory --output context/agent-memory.md
 ```
 
 The generated Markdown is intentionally bounded. It gives an agent the project goals, relevant discoveries, provenance, and safety notes without loading the entire vault.
@@ -33,8 +33,8 @@ The generated Markdown is intentionally bounded. It gives an agent the project g
 ## 4. Inspect the timeline and review queue
 
 ```bash
-pnpm exec feedrecall timeline --date-field published --group-by month
-pnpm exec feedrecall obsolescence
+pnpm feedrecall timeline --date-field published --group-by month
+pnpm feedrecall obsolescence
 ```
 
 The running cockpit shows the synthetic memories grouped by date and highlights items that may need review. It never removes a social like or bookmark.
@@ -42,9 +42,9 @@ The running cockpit shows the synthetic memories grouped by date and highlights 
 ## 5. Connect an MCP client
 
 ```bash
-pnpm exec feedrecall install-client codex
-pnpm exec feedrecall install-client claude
-pnpm exec feedrecall install-client cursor
+pnpm feedrecall install-client codex
+pnpm feedrecall install-client claude
+pnpm feedrecall install-client cursor
 ```
 
 Then ask the client:

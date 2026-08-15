@@ -58,14 +58,14 @@ The demo vault is synthetic. It never touches your social accounts.
 corepack enable
 pnpm install --frozen-lockfile
 pnpm run build
-pnpm exec feedrecall init
-pnpm exec feedrecall import examples/discoveries.json
-pnpm exec feedrecall import-projects examples/projects.json
-pnpm exec feedrecall search "Roblox MCP"
-pnpm exec feedrecall recall "MCP memory" --project agent-memory
-pnpm exec feedrecall context --project agent-memory --output context/agent-memory.md
-pnpm exec feedrecall timeline --date-field published --group-by month
-pnpm exec feedrecall serve
+pnpm feedrecall init
+pnpm feedrecall import examples/discoveries.json
+pnpm feedrecall import-projects examples/projects.json
+pnpm feedrecall search "Roblox MCP"
+pnpm feedrecall recall "MCP memory" --project agent-memory
+pnpm feedrecall context --project agent-memory --output context/agent-memory.md
+pnpm feedrecall timeline --date-field published --group-by month
+pnpm feedrecall serve
 ```
 
 For the complete walkthrough, see [the one-minute demo](docs/DEMO.md).
@@ -78,15 +78,15 @@ Optional local enrichment requires [Ollama](https://ollama.com/) and a local mod
 
 ```bash
 ollama pull qwen3:4b
-pnpm exec feedrecall process --model qwen3:4b
+pnpm feedrecall process --model qwen3:4b
 ```
 
 Then connect the local MCP server:
 
 ```bash
-pnpm exec feedrecall install-client codex
-pnpm exec feedrecall install-client claude
-pnpm exec feedrecall install-client cursor
+pnpm feedrecall install-client codex
+pnpm feedrecall install-client claude
+pnpm feedrecall install-client cursor
 ```
 
 Agents can use `memory_recall` to recover a forgotten discovery and
@@ -95,9 +95,9 @@ evidence status. `memory_timeline` groups the same memories by publication,
 capture, or observation date. The equivalent CLI commands are:
 
 ```bash
-pnpm exec feedrecall recall "the MCP memory tool I saw last month" --project agent-memory
-pnpm exec feedrecall context --project agent-memory --output context/agent-memory.md
-pnpm exec feedrecall timeline --date-field first_seen --group-by week
+pnpm feedrecall recall "the MCP memory tool I saw last month" --project agent-memory
+pnpm feedrecall context --project agent-memory --output context/agent-memory.md
+pnpm feedrecall timeline --date-field first_seen --group-by week
 ```
 
 See [the MCP client guide](docs/CLIENTS.md) for Codex, Claude Code, Cursor, Claude Desktop, Cline, Gemini CLI, OpenCode, and other stdio-compatible clients.
