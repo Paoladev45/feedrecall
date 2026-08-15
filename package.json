@@ -36,7 +36,7 @@
     "LICENSE"
   ],
   "engines": {
-    "node": ">=22.13.0"
+    "node": ">=22.16.0"
   },
   "scripts": {
     "build": "pnpm run build:core && pnpm run build:web",
