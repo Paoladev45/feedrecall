@@ -84,7 +84,7 @@ console.log(
       timelineMs: timelineResult.milliseconds,
       databaseBytes: statSync(path.join(benchmarkHome, "feedrecall.db")).size,
       dataSource: "synthetic",
-      network: "disabled by the benchmark",
+      network: "not used by the benchmark",
     },
     null,
     2,

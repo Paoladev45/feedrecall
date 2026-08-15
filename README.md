@@ -110,7 +110,7 @@ Run the benchmark locally with synthetic data:
 pnpm benchmark
 ```
 
-It builds the core, imports 1,000 deterministic records into a temporary vault, measures import, search, recall, and timeline latency, then reports the database size. No network request or personal data is used. Results depend on your machine, so the command is the source of truth.
+It builds the core, imports 1,000 deterministic records into a temporary vault, measures import, search, recall, and timeline latency, then reports the database size. The benchmark does not make network requests or read personal data. Results depend on your machine, so the command is the source of truth.
 
 ## What v0.1 includes
 

@@ -14,4 +14,4 @@ The command reports:
 - timeline grouping latency;
 - resulting database size.
 
-The benchmark has no network path and never reads the personal vault. Results are machine-specific and should be compared only with the same Node.js version, hardware, and repository revision. The command output is the authoritative result; no hand-written performance claim is embedded in the README.
+The benchmark does not make network requests and never reads the personal vault. Results are machine-specific and should be compared only with the same Node.js version, hardware, and repository revision. The command output is the authoritative result; no hand-written performance claim is embedded in the README.

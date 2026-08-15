@@ -1,5 +1,5 @@
 import { spawn, spawnSync } from "node:child_process"
-import { mkdtempSync } from "node:fs"
+import { mkdtempSync, rmSync } from "node:fs"
 import os from "node:os"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
@@ -43,8 +43,13 @@ function stopServer() {
   if (!server.killed) server.kill()
 }
 
+function cleanupDemo() {
+  rmSync(demoHome, { recursive: true, force: true })
+}
+
 process.on("SIGINT", stopServer)
 process.on("SIGTERM", stopServer)
 server.on("exit", (code) => {
+  cleanupDemo()
   process.exitCode = code ?? 0
 })
