@@ -25,9 +25,7 @@ export function clientCommand(
     `"${executable}"`,
     ...args.map((_, index) => `"!${windowsArgumentPrefix}${index}!"`),
   ]
-  const commandLine = executable.includes(" ")
-    ? `"${commandParts.join(" ")}"`
-    : commandParts.join(" ")
+  const commandLine = `"${commandParts.join(" ")}"`
   return {
     executable: commandProcessor ?? "cmd.exe",
     args: ["/d", "/v:on", "/s", "/c", commandLine],

@@ -1,4 +1,5 @@
 import { spawnSync } from "node:child_process"
+import path from "node:path"
 import { describe, expect, it } from "vitest"
 import { clientCommand } from "../src/client-install.js"
 
@@ -18,7 +19,7 @@ describe("client connection command", () => {
         "/v:on",
         "/s",
         "/c",
-        '"codex" "!FEEDRECALL_CLIENT_ARG_0!" "!FEEDRECALL_CLIENT_ARG_1!" "!FEEDRECALL_CLIENT_ARG_2!"',
+        '""codex" "!FEEDRECALL_CLIENT_ARG_0!" "!FEEDRECALL_CLIENT_ARG_1!" "!FEEDRECALL_CLIENT_ARG_2!""',
       ],
     })
   })
@@ -32,6 +33,32 @@ describe("client connection command", () => {
 
     // Then: no shell is inserted.
     expect(command).toEqual({ executable: "codex", args })
+  })
+
+  it.skipIf(process.platform !== "win32")("executes a no-space Windows executable", () => {
+    // Given: a system executable whose path does not contain spaces.
+    const executable = path.join(
+      process.env["SystemRoot"] ?? "C:\\Windows",
+      "System32",
+      "where.exe",
+    )
+    const commandProcessor = process.env["ComSpec"] ?? "C:\\Windows\\System32\\cmd.exe"
+    const command = clientCommand(executable, ["cmd.exe"], "win32", commandProcessor)
+
+    // When: the prepared command is executed through cmd.exe.
+    const result = spawnSync(command.executable, command.args, {
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        FEEDRECALL_CLIENT_ARG_0: "cmd.exe",
+      },
+      windowsVerbatimArguments: true,
+    })
+
+    // Then: the no-space executable receives its argument intact.
+    expect(result.error).toBeUndefined()
+    expect(result.status).toBe(0)
+    expect(result.stdout).toContain("cmd.exe")
   })
 
   it

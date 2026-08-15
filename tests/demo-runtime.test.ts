@@ -34,4 +34,21 @@ describe("demo runtime readiness", () => {
     // Then: readiness resolves only after the server responds successfully.
     expect(server.listening).toBe(true)
   })
+
+  it("does not follow readiness redirects", async () => {
+    // Given: a local process that tries to redirect the readiness probe away.
+    const server = createServer((_request, response) => {
+      response.writeHead(302, { Location: "https://example.com/" })
+      response.end()
+    })
+    servers.push(server)
+    const port = await findAvailablePort(49_152)
+    await new Promise<void>((resolve) => server.listen(port, "127.0.0.1", resolve))
+
+    // When: the demo probes the local URL.
+    const readiness = waitForHttp(`http://127.0.0.1:${port}/`, 100)
+
+    // Then: the redirect cannot turn into a successful readiness result.
+    await expect(readiness).rejects.toThrow("Demo server did not become ready")
+  })
 })
