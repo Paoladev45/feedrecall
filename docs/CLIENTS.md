@@ -22,6 +22,15 @@ pnpm feedrecall install-client cursor
 
 ## Other MCP clients
 
+Before the package is published to a registry, run the CLI directly from the public GitHub repository:
+
+```bash
+pnpm dlx github:Paoladev45/feedrecall mcp
+```
+
+The repository `prepare` step builds the CLI before pnpm exposes its `feedrecall` binary. This keeps the
+GitHub installation path usable without copying a checkout or depending on the npm registry.
+
 For Claude Desktop, Cline, Gemini CLI, OpenCode, or another client that accepts an MCP `stdio` server, use the local executable form in its MCP settings:
 
 ```json

@@ -28,6 +28,17 @@ pnpm demo
 
 Open the URL printed by the command to inspect the inbox, evidence states, project relevance, timeline, and review queue. The demo automatically chooses the next free local port when `4173` is already in use. Press `Ctrl+C` to stop the local cockpit.
 
+## Run from GitHub
+
+The public package is not required for a first test. Run the MCP server directly from the repository:
+
+```bash
+pnpm dlx github:Paoladev45/feedrecall mcp
+```
+
+The GitHub package builds its CLI during installation, then pnpm starts the `feedrecall` binary. The
+registry form will be documented after the package is published.
+
 ## Why
 
 Saving a discovery is only the beginning:
