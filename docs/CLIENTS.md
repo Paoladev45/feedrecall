@@ -25,11 +25,12 @@ pnpm feedrecall install-client cursor
 Before the package is published to a registry, run the CLI directly from the public GitHub repository:
 
 ```bash
-pnpm dlx github:Paoladev45/feedrecall mcp
+pnpm dlx --allow-build=feedrecall@https://codeload.github.com/Paoladev45/feedrecall/tar.gz/* github:Paoladev45/feedrecall mcp
 ```
 
-The repository `prepare` step builds the CLI before pnpm exposes its `feedrecall` binary. This keeps the
-GitHub installation path usable without copying a checkout or depending on the npm registry.
+The `allow-build` entry gives pnpm permission to run the repository `prepare` step, which builds the CLI
+before pnpm exposes its `feedrecall` binary. This keeps the GitHub installation path usable without copying
+a checkout or depending on the npm registry.
 
 For Claude Desktop, Cline, Gemini CLI, OpenCode, or another client that accepts an MCP `stdio` server, use the local executable form in its MCP settings:
 

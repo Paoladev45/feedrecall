@@ -33,11 +33,11 @@ Open the URL printed by the command to inspect the inbox, evidence states, proje
 The public package is not required for a first test. Run the MCP server directly from the repository:
 
 ```bash
-pnpm dlx github:Paoladev45/feedrecall mcp
+pnpm dlx --allow-build=feedrecall@https://codeload.github.com/Paoladev45/feedrecall/tar.gz/* github:Paoladev45/feedrecall mcp
 ```
 
-The GitHub package builds its CLI during installation, then pnpm starts the `feedrecall` binary. The
-registry form will be documented after the package is published.
+The `allow-build` entry lets pnpm build the CLI during installation, then pnpm starts the `feedrecall`
+binary. The registry form will be documented after the package is published.
 
 ## Why
 
