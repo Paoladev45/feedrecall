@@ -34,7 +34,9 @@ describe("client connection command", () => {
     expect(command).toEqual({ executable: "codex", args })
   })
 
-  it.each(["SAFE&whoami", "SAFE|whoami", "SAFE%PATH%", "SAFE^whoami", "SAFE(parent)"])(
+  it
+    .skipIf(process.platform !== "win32")
+    .each(["SAFE&whoami", "SAFE|whoami", "SAFE%PATH%", "SAFE^whoami", "SAFE(parent)"])(
     "keeps shell metacharacters inside a Windows argument: %s",
     (value) => {
       // Given: an argument that would become a second command when unquoted.
