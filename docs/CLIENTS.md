@@ -25,7 +25,7 @@ pnpm feedrecall install-client cursor
 Before the package is published to a registry, run the CLI directly from the public GitHub repository:
 
 ```bash
-pnpm dlx --allow-build=feedrecall@https://codeload.github.com/Paoladev45/feedrecall/tar.gz/* github:Paoladev45/feedrecall mcp
+pnpm dlx --allow-build=feedrecall@https://codeload.github.com/Paoladev45/feedrecall/tar.gz/* github:Paoladev45/feedrecall#agent/trending-readiness mcp
 ```
 
 The `allow-build` entry gives pnpm permission to run the repository `prepare` step, which builds the CLI
