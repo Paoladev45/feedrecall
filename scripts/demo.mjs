@@ -9,6 +9,12 @@ import { terminateChild, waitForHttp } from "./demo-runtime.mjs"
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
 const cliPath = path.join(root, "dist", "cli.js")
 const demoHome = mkdtempSync(path.join(os.tmpdir(), "feedrecall-demo-"))
+const cleanupWatchdog = spawn(
+  process.execPath,
+  [path.join(root, "scripts", "demo-cleanup.mjs"), demoHome, String(process.pid)],
+  { detached: true, stdio: "ignore" },
+)
+cleanupWatchdog.unref()
 const environment = { ...process.env, FEEDRECALL_HOME: demoHome }
 let server
 let cleaned = false
@@ -27,8 +33,13 @@ function runCli(args) {
 
 function cleanupDemo() {
   if (cleaned) return
-  cleaned = true
-  rmSync(demoHome, { recursive: true, force: true })
+  try {
+    rmSync(demoHome, { recursive: true, force: true })
+    cleaned = true
+  } catch (error) {
+    if (process.platform !== "win32") throw error
+    setTimeout(cleanupDemo, 50)
+  }
 }
 
 function stopServer() {
@@ -53,10 +64,13 @@ function handleSignal(code) {
   shuttingDown = true
   process.exitCode = code
   stopServer()
+  cleanupDemo()
 }
 
 process.once("SIGINT", () => handleSignal(130))
 process.once("SIGTERM", () => handleSignal(143))
+process.once("SIGBREAK", () => handleSignal(130))
+process.once("exit", cleanupDemo)
 
 try {
   runCli(["init"])

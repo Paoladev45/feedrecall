@@ -51,7 +51,7 @@
     "check": "pnpm run typecheck && pnpm run lint && pnpm test && pnpm run build",
     "demo": "pnpm run build && node scripts/demo.mjs",
     "benchmark": "pnpm run build:core && node scripts/benchmark.mjs",
-    "prepare": "pnpm run build:core",
+    "prepare": "node scripts/prepare.mjs",
     "prepack": "pnpm run build"
   },
   "dependencies": {
