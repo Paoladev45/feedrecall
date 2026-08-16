@@ -1,8 +1,9 @@
 {
   "name": "feedrecall",
   "version": "0.1.0",
-  "description": "Turn saved social discoveries into project-aware memory for AI agents.",
+  "description": "Turn saved social discoveries into local, project-aware MCP memory for AI agents.",
   "type": "module",
+  "packageManager": "pnpm@11.18.0",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -21,7 +22,8 @@
     "codex",
     "claude-code",
     "cursor",
-    "sqlite"
+    "sqlite",
+    "mcp-server"
   ],
   "bin": {
     "feedrecall": "dist/cli.js"
@@ -34,10 +36,10 @@
     "LICENSE"
   ],
   "engines": {
-    "node": ">=22.5.0"
+    "node": ">=22.16.0"
   },
   "scripts": {
-    "build": "npm run build:core && npm run build:web",
+    "build": "pnpm run build:core && pnpm run build:web",
     "build:core": "tsup",
     "build:web": "vite build",
     "dev": "vite",
@@ -45,7 +47,12 @@
     "lint": "biome check .",
     "format": "biome check --write .",
     "test": "vitest run",
-    "check": "npm run typecheck && npm run lint && npm test && npm run build"
+    "feedrecall": "node dist/cli.js",
+    "check": "pnpm run typecheck && pnpm run lint && pnpm test && pnpm run build",
+    "demo": "pnpm run build && node scripts/demo.mjs",
+    "benchmark": "pnpm run build:core && node scripts/benchmark.mjs",
+    "prepare": "node scripts/prepare.mjs",
+    "prepack": "pnpm run build"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.9",
