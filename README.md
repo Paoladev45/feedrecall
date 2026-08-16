@@ -33,7 +33,7 @@ Open the URL printed by the command to inspect the inbox, evidence states, proje
 The public package is not required for a first test. Run the MCP server directly from the repository:
 
 ```bash
-pnpm dlx --allow-build=feedrecall@https://codeload.github.com/Paoladev45/feedrecall/tar.gz/* github:Paoladev45/feedrecall#agent/trending-readiness mcp
+pnpm dlx --allow-build=feedrecall@https://codeload.github.com/Paoladev45/feedrecall/tar.gz/* github:Paoladev45/feedrecall#main mcp
 ```
 
 The `allow-build` entry lets pnpm build the CLI during installation, then pnpm starts the `feedrecall`
