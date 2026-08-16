@@ -33,11 +33,12 @@ Open the URL printed by the command to inspect the inbox, evidence states, proje
 The public package is not required for a first test. Run the MCP server directly from the repository:
 
 ```bash
-pnpm dlx --allow-build=feedrecall@https://codeload.github.com/Paoladev45/feedrecall/tar.gz/* github:Paoladev45/feedrecall#main mcp
+pnpm dlx --allow-build=feedrecall@https://codeload.github.com/Paoladev45/feedrecall/tar.gz/eaa3599ee50e6d088bfd34253cebdfab2af4f2fb --allow-build=better-sqlite3 github:Paoladev45/feedrecall#v0.1.1 mcp
 ```
 
-The `allow-build` entry lets pnpm build the CLI during installation, then pnpm starts the `feedrecall`
-binary. The registry form will be documented after the package is published.
+The build allowlist is pinned to the `v0.1.1` commit because pnpm 11 resolves Git dependencies to an exact
+tarball locator. It authorizes both FeedRecall's build and `better-sqlite3`'s native build, then starts the
+`feedrecall` binary. Update the tag and commit together when using a newer release.
 
 ## Why
 
