@@ -25,12 +25,11 @@ pnpm feedrecall install-client cursor
 Before the package is published to a registry, run the CLI directly from the public GitHub repository:
 
 ```bash
-pnpm dlx --allow-build=feedrecall@https://codeload.github.com/Paoladev45/feedrecall/tar.gz/* github:Paoladev45/feedrecall#agent/trending-readiness mcp
+pnpm dlx --allow-build=feedrecall@https://codeload.github.com/Paoladev45/feedrecall/tar.gz/eaa3599ee50e6d088bfd34253cebdfab2af4f2fb --allow-build=better-sqlite3 github:Paoladev45/feedrecall#v0.1.1 mcp
 ```
 
-The `allow-build` entry gives pnpm permission to run the repository `prepare` step, which builds the CLI
-before pnpm exposes its `feedrecall` binary. This keeps the GitHub installation path usable without copying
-a checkout or depending on the npm registry.
+The two build flags are intentional: pnpm 11 resolves the Git package to an exact tarball URL, and
+`better-sqlite3` needs a native build. Keep the tag and pinned commit aligned when upgrading the release.
 
 For Claude Desktop, Cline, Gemini CLI, OpenCode, or another client that accepts an MCP `stdio` server, use the local executable form in its MCP settings:
 
