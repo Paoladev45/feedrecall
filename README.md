@@ -16,29 +16,34 @@ No X API. No cloud account. No telemetry. Your archive stays on your machine.
 
 ![FeedRecall local memory cockpit](docs/assets/feedrecall-cockpit.jpg)
 
-## Try it in one minute
+## Try it in one command
 
 The interactive demo uses only synthetic records and creates its vault in a temporary directory. It never reads your browser, X account, cookies, or private files.
 
 ```bash
-corepack enable
-pnpm install --frozen-lockfile
-pnpm demo
+pnpm --config.ignore-scripts=true dlx https://github.com/Paoladev45/feedrecall/releases/latest/download/feedrecall.tgz demo
 ```
 
 Open the URL printed by the command to inspect the inbox, evidence states, project relevance, timeline, and review queue. The demo automatically chooses the next free local port when `4173` is already in use. Press `Ctrl+C` to stop the local cockpit.
 
-## Run from GitHub
+Requires Node.js 22.16+ and pnpm 11. The package comes from the latest GitHub release, not from npm.
 
-The public package is not required for a first test. Run the MCP server directly from the repository:
+## Connect your AI agent
+
+One command creates the local vault and installs a version-pinned MCP configuration:
 
 ```bash
-pnpm dlx --allow-build=feedrecall@https://codeload.github.com/Paoladev45/feedrecall/tar.gz/eaa3599ee50e6d088bfd34253cebdfab2af4f2fb --allow-build=better-sqlite3 github:Paoladev45/feedrecall#v0.1.1 mcp
+# Codex, ChatGPT desktop, and the Codex IDE extension
+pnpm --config.ignore-scripts=true dlx https://github.com/Paoladev45/feedrecall/releases/latest/download/feedrecall.tgz setup codex
+
+# Claude Code
+pnpm --config.ignore-scripts=true dlx https://github.com/Paoladev45/feedrecall/releases/latest/download/feedrecall.tgz setup claude
+
+# Cursor
+pnpm --config.ignore-scripts=true dlx https://github.com/Paoladev45/feedrecall/releases/latest/download/feedrecall.tgz setup cursor
 ```
 
-The build allowlist is pinned to the `v0.1.1` commit because pnpm 11 resolves Git dependencies to an exact
-tarball locator. It authorizes both FeedRecall's build and `better-sqlite3`'s native build, then starts the
-`feedrecall` binary. Update the tag and commit together when using a newer release.
+The command disables dependency install scripts and uses the prebuilt package contents. The installer stores the exact release URL in the client configuration, so an existing setup does not silently move to a newer version. FeedRecall can also be connected to Claude Desktop, Cline, Gemini CLI, OpenCode, or any stdio-compatible MCP client; see [the MCP client guide](docs/CLIENTS.md).
 
 ## Why
 
@@ -62,11 +67,13 @@ FeedRecall is not another generic "store a note, retrieve a note" memory server:
 
 The goal is simple: recover a useful discovery in seconds, then remember what happened when you actually tried it.
 
-## Quick start
+## Develop locally
 
-The demo vault is synthetic. It never touches your social accounts.
+Clone the repository when you want to inspect or contribute to the code:
 
 ```bash
+git clone https://github.com/Paoladev45/feedrecall.git
+cd feedrecall
 corepack enable
 pnpm install --frozen-lockfile
 pnpm run build
@@ -93,7 +100,7 @@ ollama pull qwen3:4b
 pnpm feedrecall process --model qwen3:4b
 ```
 
-Then connect the local MCP server:
+Then connect this local checkout instead of the release package:
 
 ```bash
 pnpm feedrecall install-client codex

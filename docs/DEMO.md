@@ -5,12 +5,12 @@ This walkthrough uses the synthetic examples committed in the repository. It doe
 ## 1. Start the interactive demo
 
 ```bash
-corepack enable
-pnpm install --frozen-lockfile
-pnpm demo
+pnpm --config.ignore-scripts=true dlx https://github.com/Paoladev45/feedrecall/releases/latest/download/feedrecall.tgz demo
 ```
 
 Open the URL printed by the command. The demo creates a temporary vault from the synthetic examples and starts the local cockpit on the first free local port.
+
+For a local checkout, the equivalent development command is `pnpm demo`.
 
 The interactive cockpit is the synthetic-data demo. The CLI commands below are standalone examples for your configured local vault; they do not automatically reuse the temporary demo vault created in the first step.
 
@@ -42,10 +42,10 @@ The running cockpit shows the synthetic memories grouped by date and highlights 
 ## 5. Connect an MCP client
 
 ```bash
-pnpm feedrecall install-client codex
-pnpm feedrecall install-client claude
-pnpm feedrecall install-client cursor
+pnpm --config.ignore-scripts=true dlx https://github.com/Paoladev45/feedrecall/releases/latest/download/feedrecall.tgz setup codex
 ```
+
+Replace `codex` with `claude` or `cursor` for another client.
 
 Then ask the client:
 

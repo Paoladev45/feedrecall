@@ -1,7 +1,10 @@
 import { spawnSync } from "node:child_process"
+import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises"
+import { tmpdir } from "node:os"
 import path from "node:path"
 import { describe, expect, it } from "vitest"
-import { clientCommand } from "../src/client-install.js"
+import { clientCommand, installClient } from "../src/client-install.js"
+import { packageMcpLaunch, releasePackageUrl } from "../src/product.js"
 
 describe("client connection command", () => {
   it("uses the Windows command processor for executable shims", () => {
@@ -33,6 +36,45 @@ describe("client connection command", () => {
 
     // Then: no shell is inserted.
     expect(command).toEqual({ executable: "codex", args })
+  })
+
+  it("builds a version-pinned public MCP launcher", () => {
+    expect(packageMcpLaunch(releasePackageUrl, "linux", undefined)).toEqual({
+      executable: "pnpm",
+      args: ["--config.ignore-scripts=true", "dlx", releasePackageUrl, "mcp"],
+    })
+  })
+
+  it("routes the public launcher through cmd on Windows", () => {
+    expect(packageMcpLaunch(releasePackageUrl, "win32", "C:\\Windows\\System32\\cmd.exe")).toEqual({
+      executable: "C:\\Windows\\System32\\cmd.exe",
+      args: ["/d", "/s", "/c", `pnpm --config.ignore-scripts=true dlx "${releasePackageUrl}" mcp`],
+    })
+  })
+
+  it("preserves unrelated Cursor settings while installing FeedRecall", async () => {
+    const home = await mkdtemp(path.join(tmpdir(), "feedrecall-cursor-"))
+    const cursorDirectory = path.join(home, ".cursor")
+    await mkdir(cursorDirectory)
+    const configPath = path.join(cursorDirectory, "mcp.json")
+    await writeFile(
+      configPath,
+      `${JSON.stringify({ theme: "dark", mcpServers: { existing: { command: "existing" } } })}\n`,
+      "utf8",
+    )
+
+    installClient("cursor", { executable: "pnpm", args: ["dlx", "feedrecall.tgz", "mcp"] }, home)
+
+    expect(JSON.parse(await readFile(configPath, "utf8"))).toEqual({
+      theme: "dark",
+      mcpServers: {
+        existing: { command: "existing" },
+        feedrecall: {
+          command: "pnpm",
+          args: ["dlx", "feedrecall.tgz", "mcp"],
+        },
+      },
+    })
   })
 
   it.skipIf(process.platform !== "win32")("executes a no-space Windows executable", () => {
