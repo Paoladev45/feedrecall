@@ -1,6 +1,7 @@
 {
   "name": "feedrecall",
   "version": "0.2.0",
+  "mcpName": "io.github.Paoladev45/feedrecall",
   "description": "Turn saved social discoveries into local, project-aware MCP memory for AI agents.",
   "type": "module",
   "packageManager": "pnpm@11.18.0",

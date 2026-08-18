@@ -1,0 +1,15 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
+  "name": "io.github.Paoladev45/feedrecall",
+  "description": "Local-first, project-aware MCP memory server for AI agents: turns saved likes, bookmarks, and links into SQLite-backed memory with an evidence trail, timeline, and explainable freshness windows.",
+  "version_detail": {
+    "version": "0.2.0"
+  },
+  "packages": [
+    {
+      "registry_type": "npm",
+      "identifier": "feedrecall",
+      "version": "0.2.0"
+    }
+  ]
+}
