@@ -12,7 +12,7 @@ FeedRecall turns human-selected likes, bookmarks, saved links, repositories, vid
 
 No X API. No cloud account. No telemetry. Your archive stays on your machine.
 
-> Early public alpha: the local core is usable today, while connectors and enrichment workflows are still growing.
+> v0.2.0 is the current release: the local core, projects, and context packs ship today, while connectors and enrichment workflows are still growing.
 
 ![FeedRecall local memory cockpit](docs/assets/feedrecall-cockpit.jpg)
 
@@ -131,8 +131,11 @@ pnpm benchmark
 
 It builds the core, imports 1,000 deterministic records into a temporary vault, measures import, search, recall, and timeline latency, then reports the database size. The benchmark does not make network requests or read personal data. Results depend on your machine, so the command is the source of truth.
 
-## What v0.1 includes
+## What v0.2 includes
 
+- One-command install from GitHub releases via `pnpm dlx` (never npm), shipping as `feedrecall.tgz` plus `feedrecall.tgz.sha256`.
+- Version-pinned MCP setup (`setup codex|claude|cursor` and `install-client`) that records the exact release URL so an existing client is not silently upgraded.
+- Public MCP launcher with a Windows `cmd.exe` shim (injection-hardened) alongside the direct `pnpm … mcp` form.
 - Local SQLite storage and full-text search.
 - Idempotent JSON and URL imports.
 - Processing, evidence, and decision lifecycles.
@@ -143,6 +146,7 @@ It builds the core, imports 1,000 deterministic records into a temporary vault, 
 - Read/write MCP tools with explicit annotations.
 - Local dashboard and browser capture extension.
 - Optional local enrichment through Ollama; core features work without it.
+- Automated GitHub release workflow and CI on Ubuntu and Windows.
 
 ## Capture without the X API
 
@@ -160,16 +164,16 @@ Public post URLs can also be enriched with local collectors such as `gallery-dl`
 - No remote model provider in the core application.
 - Tokens, cookies, and passwords are not accepted in imports.
 - The public repository contains only synthetic examples.
-- Destructive social cleanup is intentionally outside v0.1.
+- Destructive social cleanup is intentionally outside v0.2.0.
 
 ## Current status
 
-The public alpha already includes the local store, browser capture extension, timeline, recall, project context packs, MCP tools, and explainable freshness review. It does not claim to be an autonomous truth oracle: external release, pricing, or changelog verification is a planned enrichment step.
+v0.2.0 already includes the local store, browser capture extension, timeline, recall, project context packs, MCP tools, and explainable freshness review. It does not claim to be an autonomous truth oracle: external release, pricing, or changelog verification is a planned enrichment step.
 
 ## Roadmap
 
-- **v0.1 Memory:** import, enrich, classify, search, timeline, MCP.
-- **v0.2 Projects:** project objects, context packs, collections, stronger relevance.
+- **v0.1 Memory (done):** import, enrich, classify, search, timeline, MCP.
+- **v0.2 Projects (current):** project objects, context packs, collections, stronger relevance.
 - **v0.3 Intelligence:** opportunities, experiments, decisions, agent feedback loop.
 - **v1 Knowledge OS:** discover, understand, suggest, test, implement, remember.
 
