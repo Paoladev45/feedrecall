@@ -17,4 +17,4 @@ version, reproduction steps with synthetic data, and the expected impact.
 - The canonical vault stays in `~/.feedrecall` unless `FEEDRECALL_HOME` is explicitly set.
 - Ollama enrichment accepts only loopback endpoints.
 - The browser extension reads only visible post elements after a user click and never reads cookies.
-- Social cleanup, publication, purchases, and other destructive external actions are outside v0.1.
+- Social cleanup, publication, purchases, and other destructive external actions are outside v0.2.0.

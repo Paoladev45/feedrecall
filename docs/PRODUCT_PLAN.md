@@ -55,7 +55,7 @@ is untrusted data and can never supply executable agent instructions.
 
 ## Releases
 
-### v0.1: Memory
+### v0.1: Memory (done)
 
 - Capture visible X posts without the X API.
 - Import JSON and URLs without duplicates.
@@ -65,7 +65,7 @@ is untrusted data and can never supply executable agent instructions.
 - Query and update the lifecycle through MCP.
 - Inspect discoveries, evidence, relevance, and opportunities in the local cockpit.
 
-### v0.2: Richer Projects and Connectors
+### v0.2: Richer Projects and Connectors (current)
 
 - Add collections for learning topics distinct from active projects.
 - Let users edit relevance rules and project constraints.

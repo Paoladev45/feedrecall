@@ -77,7 +77,7 @@ No purple palette, gradients, decorative blobs, or color without semantic meanin
 
 ### Opportunity Row
 - Structure: project, discovery, impact, proposed next step.
-- States in v0.1: default, hover, inspect. Ignored and experiment-created arrive with v0.3.
+- States in v0.2.0: default, hover, inspect. Ignored and experiment-created arrive with v0.3.
 - Actions use icons with tooltips where the symbol is not universal.
 
 ### Timeline Band
@@ -119,4 +119,4 @@ Tonal shift plus 1px structural separators. Individual repeated discoveries are 
 - WCAG 2.2 AA, body contrast at least 4.5:1, complete keyboard reachability, visible focus, reduced motion respected.
 - Status always includes a textual label.
 - Primary content must not scroll horizontally at 375px.
-- Accepted debt: none for v0.1.
+- Accepted debt: none for v0.2.0.

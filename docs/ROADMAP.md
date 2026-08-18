@@ -11,7 +11,7 @@ Internet discovery -> understanding -> project relevance -> experiment
 
 It is not a generic vector database, a social-network clone, or an autonomous truth oracle.
 
-## v0.1: Memory
+## v0.1: Memory (done)
 
 - Import synthetic JSON, generic URLs, and browser-captured posts.
 - Deduplicate by stable platform identity or canonical URL.
@@ -25,7 +25,7 @@ It is not a generic vector database, a social-network clone, or an autonomous tr
 - Expose the same tools through a local MCP server.
 - Run without a model; optionally enrich through local Ollama.
 
-## v0.2: Richer Projects and Connectors
+## v0.2: Richer Projects and Connectors (current)
 
 - Model projects as goals, technologies, repositories, problems, discoveries, experiments, and decisions.
 - Produce transparent relevance scores with human-editable reasons.
