@@ -6,6 +6,6 @@ export async function importProjects(vault: Vault, filePath: string): Promise<nu
   const raw: unknown = JSON.parse(await readFile(filePath, "utf8"))
   const envelope = ProjectEnvelopeSchema.parse(raw)
   for (const project of envelope.projects) vault.saveProject(project)
-  for (const memory of vault.search({ query: "", limit: 500 })) vault.refreshRelevance(memory.id)
+  vault.refreshAllRelevance()
   return envelope.projects.length
 }

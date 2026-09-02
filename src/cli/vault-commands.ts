@@ -5,6 +5,7 @@ import { OllamaClient } from "../enrichment/ollama.js"
 import { processVault } from "../enrichment/process.js"
 import { importFile } from "../importers/json.js"
 import { importProjects } from "../importers/projects.js"
+import { importTwitterLibrary } from "../importers/twitter-library.js"
 import { importUrl } from "../importers/url.js"
 import { dataDirectory } from "../paths.js"
 import type { CliDependencies } from "./dependencies.js"
@@ -27,10 +28,30 @@ export function addVaultCommands(program: Command, dependencies: CliDependencies
       const vault = dependencies.openVault()
       try {
         const counts = await importFile(vault, path.resolve(z.string().parse(file)))
-        for (const memory of vault.search({ query: "", limit: 500 }))
-          vault.refreshRelevance(memory.id)
+        vault.refreshAllRelevance()
         console.log(
           `Imported ${counts.inserted}; updated ${counts.updated}; unchanged ${counts.unchanged}`,
+        )
+      } finally {
+        vault.close()
+      }
+    })
+
+  program
+    .command("import-twitter-library")
+    .argument("<file>")
+    .description("Import a local X library.json snapshot without the X API or cookies")
+    .action(async (file) => {
+      const vault = dependencies.openVault()
+      try {
+        const report = await importTwitterLibrary(vault, path.resolve(z.string().parse(file)))
+        vault.refreshAllRelevance()
+        console.log(
+          [
+            `Imported ${report.sourceRecords} source records: ${report.inserted} inserted; ${report.updated} updated; ${report.unchanged} unchanged`,
+            `Media: ${report.mediaItems} across ${report.recordsWithMedia} records; linked resources: ${report.externalLinks}`,
+            `Categories: ${report.categories.length}`,
+          ].join("\n"),
         )
       } finally {
         vault.close()

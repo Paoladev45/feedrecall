@@ -142,6 +142,11 @@ export class Vault {
     return scores
   }
 
+  refreshAllRelevance(): void {
+    for (const memory of listMemories(this.#database, 50_000, (id) => this.#relevance(id)))
+      this.refreshRelevance(memory.id)
+  }
+
   mark(id: string, input: MarkInput): void {
     const memory = this.get(id)
     if (!memory) throw new Error(`Memory not found: ${id}`)

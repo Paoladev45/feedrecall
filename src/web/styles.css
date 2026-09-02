@@ -455,7 +455,7 @@ h1 {
 }
 .evidence--rejected {
   color: var(--coral);
-  background: #fff0ed;
+  background: var(--coral-pale);
 }
 
 .detail-pane {
@@ -561,6 +561,105 @@ h1 {
   background: var(--surface);
   color: var(--muted);
   font-size: 10px;
+}
+.detail-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.detail-section-heading h3 {
+  margin-block-end: 0;
+}
+.detail-count {
+  color: var(--faint);
+  font-size: 11px;
+  font-weight: 600;
+}
+.resource-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.resource-list li {
+  min-inline-size: 0;
+}
+.resource-list a,
+.resource-fallback {
+  min-inline-size: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-block-size: 32px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  font-size: 11px;
+}
+.resource-list a {
+  color: var(--blue);
+  text-decoration: none;
+}
+.resource-list a:hover {
+  border-color: var(--blue);
+  background: var(--blue-pale);
+}
+.resource-url {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.resource-fallback {
+  overflow-wrap: anywhere;
+  color: var(--muted);
+}
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+}
+.media-frame {
+  min-inline-size: 0;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+}
+.media-frame img,
+.media-frame video {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+.media-frame video {
+  background: var(--ink);
+  object-fit: contain;
+}
+.media-frame > a {
+  inline-size: 100%;
+  block-size: 100%;
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  color: var(--blue);
+  font-size: 11px;
+  text-decoration: none;
+}
+.media-frame > a:hover {
+  background: var(--blue-pale);
+}
+.media-frame .resource-fallback {
+  block-size: 100%;
+  align-items: center;
+  border: 0;
+  border-radius: 0;
 }
 .detail-section dl {
   display: grid;
@@ -1274,6 +1373,9 @@ h1 {
   }
   .detail-content {
     padding: 18px 14px;
+  }
+  .media-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .analysis-band {
     padding: 18px 14px;

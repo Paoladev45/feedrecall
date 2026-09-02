@@ -361,4 +361,27 @@ describe("FeedRecall cockpit", () => {
     expect(container.querySelector("#source-detail")).toBeInstanceOf(HTMLElement)
     expect(container.querySelectorAll("#source-detail")).toHaveLength(1)
   })
+
+  it("renders linked resources and media in the selected discovery detail", async () => {
+    const baseMemory = memory("visual-detail", "observed")
+    const visualMemory: Memory = {
+      ...baseMemory,
+      content: {
+        ...baseMemory.content,
+        external_links: ["https://github.com/example/project"],
+        media: ["https://pbs.twimg.com/media/example.jpg"],
+      },
+    }
+    apiMocks.memories.mockResolvedValue([visualMemory])
+
+    await act(async () => root.render(<App />))
+    await act(async () => vi.advanceTimersByTimeAsync(120))
+
+    expect(container.textContent).toContain("Linked resources")
+    expect(container.querySelector('a[href="https://github.com/example/project"]')).toBeTruthy()
+    expect(container.textContent).toContain("Media")
+    expect(
+      container.querySelector('img[src="https://pbs.twimg.com/media/example.jpg"]'),
+    ).toBeTruthy()
+  })
 })
